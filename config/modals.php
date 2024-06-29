@@ -85,4 +85,32 @@ $tomorrow = date('Y-m-d', $newday);
     </div>
   </div>
 </div>
+<!--
+  *************************************************
+  Modal Para visualizar los Proveedores
+  *************************************************
+-->
+<div class="modal fade mt-4" id="proveedormodal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <table id="modaproveedortable" style="width:100%;">
+            <thead>
+                <tr>
+                    <th>Descripcion</th>
+                    <th>Codigo</th>
+                    <th></th>
+                </tr>
+            </thead>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
 

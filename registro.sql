@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.1
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: localhost
--- Tiempo de generación: 25-06-2024 a las 21:35:03
--- Versión del servidor: 8.0.19
--- Versión de PHP: 8.3.8
+-- Servidor: 127.0.0.1
+-- Tiempo de generación: 30-06-2024 a las 01:11:45
+-- Versión del servidor: 10.4.32-MariaDB
+-- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -29,9 +28,9 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `categoria` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `categoria` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `categoria`
@@ -49,13 +48,13 @@ INSERT INTO `categoria` (`id`, `categoria`) VALUES
 -- (Véase abajo para la vista actual)
 --
 CREATE TABLE `consulta de producto` (
-`Cantidad` float
+`Descripcion` varchar(100)
 ,`categoria` varchar(50)
-,`Costo_unidad` decimal(28,4)
-,`Descripcion` varchar(100)
 ,`familia` varchar(50)
 ,`ubicacion` varchar(100)
 ,`unidad` varchar(20)
+,`Cantidad` float
+,`Costo_unidad` decimal(28,4)
 ,`valor_inventario` decimal(28,4)
 );
 
@@ -67,8 +66,8 @@ CREATE TABLE `consulta de producto` (
 
 CREATE TABLE `estatus` (
   `id` tinyint(1) NOT NULL,
-  `estatus` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `estatus` varchar(15) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `estatus`
@@ -85,9 +84,9 @@ INSERT INTO `estatus` (`id`, `estatus`) VALUES
 --
 
 CREATE TABLE `familia` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `familia` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `familia`
@@ -110,20 +109,43 @@ INSERT INTO `familia` (`id`, `familia`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `impuesto`
+--
+
+CREATE TABLE `impuesto` (
+  `id` int(11) NOT NULL,
+  `impuesto` int(11) NOT NULL,
+  `estatus` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `impuesto`
+--
+
+INSERT INTO `impuesto` (`id`, `impuesto`, `estatus`) VALUES
+(1, 8, 0),
+(2, 12, 1),
+(3, 14, 0),
+(4, 16, 0),
+(6, 22, 0);
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `movimiento_inventario`
 --
 
 CREATE TABLE `movimiento_inventario` (
-  `id` int NOT NULL,
-  `codigo_producto` int NOT NULL,
-  `codigo_tmovi` int NOT NULL,
+  `id` int(11) NOT NULL,
+  `codigo_producto` int(11) NOT NULL,
+  `codigo_tmovi` int(11) NOT NULL,
   `fecha_movimiento` datetime NOT NULL,
-  `comentario` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `id_usuario` int DEFAULT NULL,
-  `cantidad` int NOT NULL,
+  `comentario` varchar(150) DEFAULT NULL,
+  `id_usuario` int(11) DEFAULT NULL,
+  `cantidad` int(11) NOT NULL,
   `cant_ant` float NOT NULL,
   `nueva_cant` float NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `movimiento_inventario`
@@ -149,12 +171,12 @@ INSERT INTO `movimiento_inventario` (`id`, `codigo_producto`, `codigo_tmovi`, `f
 --
 
 CREATE TABLE `producto` (
-  `id_producto` int NOT NULL,
-  `Descripcion` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `Categoria` int NOT NULL,
-  `Familia` int NOT NULL,
-  `Ubicacion` int NOT NULL,
-  `Unidad` int NOT NULL,
+  `id_producto` int(11) NOT NULL,
+  `Descripcion` varchar(100) NOT NULL,
+  `Categoria` int(11) NOT NULL,
+  `Familia` int(11) NOT NULL,
+  `Ubicacion` int(11) NOT NULL,
+  `Unidad` int(11) NOT NULL,
   `Cantidad` float NOT NULL,
   `Costo_unidad` decimal(28,4) NOT NULL,
   `valor_inventario` decimal(28,4) NOT NULL
@@ -165,21 +187,21 @@ CREATE TABLE `producto` (
 --
 
 INSERT INTO `producto` (`id_producto`, `Descripcion`, `Categoria`, `Familia`, `Ubicacion`, `Unidad`, `Cantidad`, `Costo_unidad`, `valor_inventario`) VALUES
-(1, 'Arroz integral', 1, 1, 1, 1, 40, '22.0000', '880.0000'),
-(2, 'Papas', 1, 2, 2, 1, 20, '2.0000', '40.0000'),
-(3, 'Piñas', 1, 3, 2, 1, 10, '2.0000', '12.0000'),
-(4, 'Requeson', 1, 4, 3, 1, 15, '3.0000', '45.0000'),
-(5, 'Pollo congelado', 1, 5, 3, 3, 15, '4.0000', '60.0000'),
-(6, 'Tequila (GA 60°)\r\n', 2, 6, 4, 1, 8, '5.0000', '40.0000'),
-(7, 'Whisky (GA 40°)', 2, 6, 4, 1, 6, '8.0000', '48.0000'),
-(8, 'Coca-Cola 2', 3, 3, 4, 1, 34, '2.0000', '68.0000'),
-(9, 'Pumpkin Spice Latte', 2, 8, 5, 2, 40, '2.0000', '80.0000'),
-(10, 'Tabla de picar 25cm * 40cm', 3, 9, 6, 2, 15, '3.0000', '45.0000'),
-(11, 'Cubiertos de 12 cm', 3, 10, 6, 2, 100, '1.0000', '85.0000'),
-(12, 'Envases desechaples 10cm * 9cm', 3, 11, 6, 3, 500, '0.0000', '125.0000'),
-(13, 'Platos de 23cm ', 3, 12, 6, 3, 95, '1.0000', '119.0000'),
-(15, 'otra mas', 2, 2, 1, 2, 478, '47.5800', '22743.2400'),
-(17, 'lalala', 1, 3, 1, 2, 45, '475.0000', '21375.0000');
+(1, 'Arroz integral', 1, 1, 1, 1, 40, 22.0000, 880.0000),
+(2, 'Papas', 1, 2, 2, 1, 20, 2.0000, 40.0000),
+(3, 'Piñas', 1, 3, 2, 1, 10, 2.0000, 12.0000),
+(4, 'Requeson', 1, 4, 3, 1, 15, 3.0000, 45.0000),
+(5, 'Pollo congelado', 1, 5, 3, 3, 15, 4.0000, 60.0000),
+(6, 'Tequila (GA 60°)\r\n', 2, 6, 4, 1, 8, 5.0000, 40.0000),
+(7, 'Whisky (GA 40°)', 2, 6, 4, 1, 6, 8.0000, 48.0000),
+(8, 'Coca-Cola 2', 3, 3, 4, 1, 34, 2.0000, 68.0000),
+(9, 'Pumpkin Spice Latte', 2, 8, 5, 2, 40, 2.0000, 80.0000),
+(10, 'Tabla de picar 25cm * 40cm', 3, 9, 6, 2, 15, 3.0000, 45.0000),
+(11, 'Cubiertos de 12 cm', 3, 10, 6, 2, 100, 1.0000, 85.0000),
+(12, 'Envases desechaples 10cm * 9cm', 3, 11, 6, 3, 500, 0.0000, 125.0000),
+(13, 'Platos de 23cm ', 3, 12, 6, 3, 95, 1.0000, 119.0000),
+(15, 'otra mas', 2, 2, 1, 2, 478, 47.5800, 22743.2400),
+(17, 'lalala', 1, 3, 1, 2, 45, 475.0000, 21375.0000);
 
 -- --------------------------------------------------------
 
@@ -188,9 +210,9 @@ INSERT INTO `producto` (`id_producto`, `Descripcion`, `Categoria`, `Familia`, `U
 --
 
 CREATE TABLE `rol_usuario` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `rol` varchar(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `rol_usuario`
@@ -203,13 +225,53 @@ INSERT INTO `rol_usuario` (`id`, `rol`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `sujeto`
+--
+
+CREATE TABLE `sujeto` (
+  `id` int(11) NOT NULL,
+  `nombre` varchar(250) NOT NULL,
+  `tipo` int(11) NOT NULL,
+  `codigo` varchar(20) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `sujeto`
+--
+
+INSERT INTO `sujeto` (`id`, `nombre`, `tipo`, `codigo`) VALUES
+(1, 'Proveedor 1', 2, '20975447'),
+(2, 'Proveedor 2', 2, '2547896');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `sujetotipo`
+--
+
+CREATE TABLE `sujetotipo` (
+  `id` int(11) NOT NULL,
+  `tiposujeto` varchar(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `sujetotipo`
+--
+
+INSERT INTO `sujetotipo` (`id`, `tiposujeto`) VALUES
+(1, 'Cliente'),
+(2, 'Proveedor');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tipo_movimiento`
 --
 
 CREATE TABLE `tipo_movimiento` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `Movimiento` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `tipo_movimiento`
@@ -227,9 +289,9 @@ INSERT INTO `tipo_movimiento` (`id`, `Movimiento`) VALUES
 --
 
 CREATE TABLE `ubicacion` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `ubicacion` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `ubicacion`
@@ -250,9 +312,9 @@ INSERT INTO `ubicacion` (`id`, `ubicacion`) VALUES
 --
 
 CREATE TABLE `unidad` (
-  `id` int NOT NULL,
+  `id` int(11) NOT NULL,
   `unidad` varchar(20) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Volcado de datos para la tabla `unidad`
@@ -270,15 +332,15 @@ INSERT INTO `unidad` (`id`, `unidad`) VALUES
 --
 
 CREATE TABLE `usuario` (
-  `id_cliente` int NOT NULL,
-  `nom_usuario` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `ape_usuario` varchar(15) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `contrasenna` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL,
-  `correo` varchar(35) COLLATE utf8mb4_general_ci NOT NULL,
-  `telefono` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-  `rol` int NOT NULL,
-  `estatus` tinyint(1) NOT NULL DEFAULT '1',
-  `bloqueo` tinyint(1) NOT NULL DEFAULT '1'
+  `id_cliente` int(11) NOT NULL,
+  `nom_usuario` varchar(15) NOT NULL,
+  `ape_usuario` varchar(15) NOT NULL,
+  `contrasenna` varchar(100) NOT NULL,
+  `correo` varchar(35) NOT NULL,
+  `telefono` varchar(20) NOT NULL,
+  `rol` int(11) NOT NULL,
+  `estatus` tinyint(1) NOT NULL DEFAULT 1,
+  `bloqueo` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -299,7 +361,7 @@ INSERT INTO `usuario` (`id_cliente`, `nom_usuario`, `ape_usuario`, `contrasenna`
 --
 DROP TABLE IF EXISTS `consulta de producto`;
 
-CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `consulta de producto`  AS  select `a`.`Descripcion` AS `Descripcion`,`b`.`categoria` AS `categoria`,`c`.`familia` AS `familia`,`d`.`ubicacion` AS `ubicacion`,`e`.`unidad` AS `unidad`,`a`.`Cantidad` AS `Cantidad`,`a`.`Costo_unidad` AS `Costo_unidad`,`a`.`valor_inventario` AS `valor_inventario` from ((((`producto` `a` join `categoria` `b` on((`a`.`Categoria` = `b`.`id`))) join `familia` `c` on((`a`.`Familia` = `c`.`id`))) join `ubicacion` `d` on((`a`.`Ubicacion` = `d`.`id`))) join `unidad` `e` on((`a`.`Unidad` = `e`.`id`))) ;
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `consulta de producto`  AS SELECT `a`.`Descripcion` AS `Descripcion`, `b`.`categoria` AS `categoria`, `c`.`familia` AS `familia`, `d`.`ubicacion` AS `ubicacion`, `e`.`unidad` AS `unidad`, `a`.`Cantidad` AS `Cantidad`, `a`.`Costo_unidad` AS `Costo_unidad`, `a`.`valor_inventario` AS `valor_inventario` FROM ((((`producto` `a` join `categoria` `b` on(`a`.`Categoria` = `b`.`id`)) join `familia` `c` on(`a`.`Familia` = `c`.`id`)) join `ubicacion` `d` on(`a`.`Ubicacion` = `d`.`id`)) join `unidad` `e` on(`a`.`Unidad` = `e`.`id`)) ;
 
 --
 -- Índices para tablas volcadas
@@ -321,6 +383,12 @@ ALTER TABLE `estatus`
 -- Indices de la tabla `familia`
 --
 ALTER TABLE `familia`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `impuesto`
+--
+ALTER TABLE `impuesto`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -346,6 +414,18 @@ ALTER TABLE `producto`
 -- Indices de la tabla `rol_usuario`
 --
 ALTER TABLE `rol_usuario`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `sujeto`
+--
+ALTER TABLE `sujeto`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `sujetotipo`
+--
+ALTER TABLE `sujetotipo`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -382,7 +462,7 @@ ALTER TABLE `usuario`
 -- AUTO_INCREMENT de la tabla `categoria`
 --
 ALTER TABLE `categoria`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `estatus`
@@ -394,49 +474,67 @@ ALTER TABLE `estatus`
 -- AUTO_INCREMENT de la tabla `familia`
 --
 ALTER TABLE `familia`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT de la tabla `impuesto`
+--
+ALTER TABLE `impuesto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `movimiento_inventario`
 --
 ALTER TABLE `movimiento_inventario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `producto`
 --
 ALTER TABLE `producto`
-  MODIFY `id_producto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id_producto` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT de la tabla `rol_usuario`
 --
 ALTER TABLE `rol_usuario`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT de la tabla `sujeto`
+--
+ALTER TABLE `sujeto`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT de la tabla `sujetotipo`
+--
+ALTER TABLE `sujetotipo`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `tipo_movimiento`
 --
 ALTER TABLE `tipo_movimiento`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `ubicacion`
 --
 ALTER TABLE `ubicacion`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `unidad`
 --
 ALTER TABLE `unidad`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  MODIFY `id_cliente` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id_cliente` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Restricciones para tablas volcadas
@@ -446,25 +544,25 @@ ALTER TABLE `usuario`
 -- Filtros para la tabla `movimiento_inventario`
 --
 ALTER TABLE `movimiento_inventario`
-  ADD CONSTRAINT `codigo_productofk` FOREIGN KEY (`codigo_producto`) REFERENCES `producto` (`id_producto`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `codigo_tmovifk` FOREIGN KEY (`codigo_tmovi`) REFERENCES `tipo_movimiento` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `id_usuariofk` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_cliente`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `codigo_productofk` FOREIGN KEY (`codigo_producto`) REFERENCES `producto` (`id_producto`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `codigo_tmovifk` FOREIGN KEY (`codigo_tmovi`) REFERENCES `tipo_movimiento` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `id_usuariofk` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id_cliente`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `producto`
 --
 ALTER TABLE `producto`
-  ADD CONSTRAINT `Categoriafk` FOREIGN KEY (`Categoria`) REFERENCES `categoria` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `Familiafk` FOREIGN KEY (`Familia`) REFERENCES `familia` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `Ubicacionfk` FOREIGN KEY (`Ubicacion`) REFERENCES `ubicacion` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `Unidadfk` FOREIGN KEY (`Unidad`) REFERENCES `unidad` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `Categoriafk` FOREIGN KEY (`Categoria`) REFERENCES `categoria` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `Familiafk` FOREIGN KEY (`Familia`) REFERENCES `familia` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `Ubicacionfk` FOREIGN KEY (`Ubicacion`) REFERENCES `ubicacion` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `Unidadfk` FOREIGN KEY (`Unidad`) REFERENCES `unidad` (`id`) ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `usuario`
 --
 ALTER TABLE `usuario`
-  ADD CONSTRAINT `estatusfk` FOREIGN KEY (`estatus`) REFERENCES `estatus` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `rol_usuariofk` FOREIGN KEY (`rol`) REFERENCES `rol_usuario` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `estatusfk` FOREIGN KEY (`estatus`) REFERENCES `estatus` (`id`) ON UPDATE CASCADE,
+  ADD CONSTRAINT `rol_usuariofk` FOREIGN KEY (`rol`) REFERENCES `rol_usuario` (`id`) ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
