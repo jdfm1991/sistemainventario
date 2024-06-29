@@ -1,0 +1,112 @@
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+/* Elementos Estaticos */
+
+.menu {
+    top: 0px;
+    padding: 5px;
+    position: fixed;
+    display: block;
+    z-index: 9998;
+    transition: all 0.5s;
+  }
+
+.formproducto {
+    top: 55px;
+    position: fixed;
+    display: block;
+    z-index: 9998;
+    transition: all 0.5s;
+}
+
+
+h1, h2, h3, h5 {
+    color: #2c3e50;
+}
+
+h1 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+h2 {
+    text-align: center;
+    margin-top: 20px;
+}
+
+p {
+    color: #34495e;
+    line-height: 1.6;
+    margin: 10px 0;
+}
+
+.navbar {
+    margin-bottom: 20px;
+}
+
+.navbar-brand, .nav-link {
+    color: #ffffff !important;
+}
+
+/* Card Styles */
+.card {
+    /*margin: 20px auto;*/
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.card-title {
+    color: #27ae60;
+}
+
+.card-body p {
+    color: #7f8c8d;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+}
+
+.item i {
+    margin-right: 10px;
+    color: #ffffff;
+}
+
+.text-end .item i {
+    margin-left: 10px;
+}
+
+.text-end .card-text {
+    margin-left: 20px;
+}
+
+.border-success {
+    border-color: #27ae60 !important;
+}
+
+.border-bottom {
+    border-bottom: 2px solid #27ae60 !important;
+}
+
+.text-success {
+    color: #27ae60 !important;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .card {
+        width: 100%;
+    }
+}
+
+footer {
+    background-color: #e2ac6eda;
+    text-align: center;
+    padding: 20px 0;
+}

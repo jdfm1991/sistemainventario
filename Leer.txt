@@ -1,0 +1,6 @@
+Catherine Aponte 
+Proyecto 
+Sistema de control de inventario para el restaurante 2M
+usuario administrador
+usuario: admin@admin.com
+Clave: admin
