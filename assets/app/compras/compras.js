@@ -1,12 +1,18 @@
+//************************************************/
+//*********Se Crean Variables Globales************/
+//***************y se inicializan*****************/
 let cont = 0;
 let numero = 0;
 const $itemcolumn = $('tbody');
-
 $(document).ready(function () {
-
+  //************************************************/
+  //*******Se Oculta los elementos iniciales********/
+  //*****************de modulo**********************/
   $('#contenedor_ver_compra').hide();
   $('#contenedor_compra').hide();
-
+  //************************************************/
+  //*********Accion para el boton registrar*********/
+  //*******************Comprar**********************/
   $('#rcompra').click(function (e) {
     e.preventDefault();
     $('#contenedor_compra').show();
@@ -15,7 +21,9 @@ $(document).ready(function () {
     $('#contenedor_default').hide();
     $('#contenedor_ver_compra').hide();
   });
-
+  //************************************************/
+  //*************Accion para el boton Ver***********/
+  //*******************Comprar**********************/
   $('#vcompra').click(function (e) {
     e.preventDefault();
     $('#contenedor_compra').hide();
@@ -24,48 +32,9 @@ $(document).ready(function () {
     $('#contenedor_default').hide();
     $('#contenedor_ver_compra').show();
   });
-
-  $('.atras').click(function (e) {
-    e.preventDefault();
-    $('#contenedor_ver_compra').hide();
-    $('#contenedor_compra').hide();
-    $('#contenedor_default').show()
-
-  });
-
-  $('#agregarproducto').click(function (e) {
-    e.preventDefault();
-    cargarlistaproducto()
-    sujeto = $('#sujeto').val();
-    impuesto = $('#impuesto').val();
-
-    if (!sujeto) {
-      Swal.fire({
-        icon: 'warning',
-        html: '<h2>¡Antes de Carga Escoger un Proveedor!</h2>',
-        showConfirmButton: false,
-        timer: 2000,
-        })
-    } else {
-      if (!impuesto) {
-        Swal.fire({
-          icon: 'warning',
-          html: '<h2>¡Antes de Carga Algun Producto Debe Escoger Una Alicuota!</h2>',
-          showConfirmButton: false,
-          timer: 2000,
-          })
-      } else {
-        $('#productomodal').modal('show');
-      }
-    }
-  });
-
-  $('#btnsujeto').click(function (e) {
-    e.preventDefault();
-    cargarListaProveedores()
-    $('#proveedormodal').modal('show'); 
-  });
-
+  //************************************************/
+  //**********Accion para el boton Cancelar*********/
+  //************************************************/
   $('#clean').click(function (e) { 
     e.preventDefault();
     $('#comprasform').get(0).reset();
@@ -74,13 +43,17 @@ $(document).ready(function () {
     $('#contenedor_compra').hide();
     $('#contenedor_default').show()
   });
-
-  $(document).on("click", "#delcol", function () {
-    column = $(this).closest('tr')
-    column.remove();
-    leftSide()
+  //************************************************/
+  //********Accion para escoger un proveedor********/
+  //************************************************/
+  $('#btnsujeto').click(function (e) {
+    e.preventDefault();
+    cargarListaProveedores()
+    $('#proveedormodal').modal('show'); 
   });
-
+  //************************************************/
+  //**********Accion para Cargar la tase de*********/
+  //*****************los impuestos******************/
   $.ajax({
     url: "assets/app/herramientas/herramientas_controller.php?op=impuestos",
     method: "POST",
@@ -89,41 +62,68 @@ $(document).ready(function () {
       $('#impuesto').append('<option value="">Alicuota</option>');
         $.each(data, function(idx, opt) {
           if (opt.estatus==1) {
-            $('#impuesto').append('<option value="'+opt.id+'" selected>'+opt.impuesto+'</option>');
+            $('#impuesto').append('<option value="'+opt.impuesto+'" selected>'+opt.impuesto+'</option>');
           }else{
-            $('#impuesto').append('<option>'+opt.impuesto+'</option>');
+            $('#impuesto').append('<option value="'+opt.impuesto+'">'+opt.impuesto+'</option>');
           }
             
         });
     }
-}); 
-
+  });
+  $('#excento').keyup(function (e) { 
+    verTotalesGenerales()
+  });
+  //************************************************/
+  //**********Accion para el boton Agragar**********/
+  //****************un nuevo producro***************/
+  $('#agregarproducto').click(function (e) {
+    e.preventDefault();
+    sujeto = $('#sujeto').val();
+    documento = $('#documento').val();
+    impuesto = $('#impuesto').val();
+    if (!sujeto) {
+      Swal.fire({
+        icon: 'warning',
+        html: '<h2>¡Antes debe Escoger un Proveedor!</h2>',
+        showConfirmButton: false,
+        timer: 2000,
+        })
+    } else {
+      if (!documento) {
+        Swal.fire({
+          icon: 'warning',
+          html: '<h2>¡Antes debe colocar un numero de factura!</h2>',
+          showConfirmButton: false,
+          timer: 2000,
+          })
+      } else {
+        if (!impuesto) {
+          Swal.fire({
+            icon: 'warning',
+            html: '<h2>¡Antes de Carga Algun Producto Debe Escoger Una Alicuota!</h2>',
+            showConfirmButton: false,
+            timer: 2000,
+            })
+        } else {
+          cargarListaProductos()
+          $('#productomodal').modal('show');
+        } 
+      }
+    }
+  });
+  //************************************************/
+  //**********Accion para el boton Eliminar*********/
+  //*****************un producro********************/
+  $(document).on("click", "#delcol", function () {
+    column = $(this).closest('tr')
+    column.remove();
+    verTotalesGenerales()
+  });
 });
 
-function cargarlistaproducto() {
-  $('#pmtable').DataTable().destroy();
-  pmtable = $('#pmtable').DataTable({
-    pageLength: 10,
-    ajax: {
-      url: "assets/app/producto/producto_controller.php?op=vertodoproducto",
-      method: 'POST', //usamos el metodo POST
-      dataSrc: ""
-    },
-    columns: [
-      { data: "Descripcion" },
-      { data: "Cantidad" },
-      {
-        data: "id_producto",
-        "render": function (data, type, row) {
-          return "<div class='text-center'><div class='btn-group'>" +
-            "<button onclick='cargarproducto(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
-            "</div></div>"
-        }
-      },
-    ],
-  });
-}
-
+//************************************************/
+//**********Funcion para cargar la lista**********/
+//***************de los proveedores***************/
 function cargarListaProveedores() {
   $('#modaproveedortable').DataTable().destroy();
   modaproveedortable = $('#modaproveedortable').DataTable({
@@ -146,8 +146,55 @@ function cargarListaProveedores() {
     ],
   });
 }
+//************************************************/
+//*********Funcion para cargar informacion********/
+//*****************del proveedores****************/
+function cargarDataProveedor(id) {
+  $.ajax({
+    url: "assets/app/proveedor/proveedor_controller.php?op=verproveedor",
+    method: "POST",
+    dataType: "json",
+    data: { id: id },
+    success: function (data) {
+      $.each(data, function(idx, opt) { 
+        $('#sujeto').val(opt.codigo);
+        $('#nombresujeto').text(opt.nombre);
+        $('#proveedormodal').modal('hide');
+    }); 
 
-function cargarproducto(id) {
+    }
+  });
+}
+//************************************************/
+//**********Funcion para cargar la lista**********/
+//*****************de los producro****************/
+function cargarListaProductos() {
+  $('#pmtable').DataTable().destroy();
+  pmtable = $('#pmtable').DataTable({
+    pageLength: 10,
+    ajax: {
+      url: "assets/app/producto/producto_controller.php?op=vertodoproducto",
+      method: 'POST', //usamos el metodo POST
+      dataSrc: ""
+    },
+    columns: [
+      { data: "Descripcion" },
+      { data: "Cantidad" },
+      {
+        data: "id_producto",
+        "render": function (data, type, row) {
+          return "<div class='text-center'><div class='btn-group'>" +
+            "<button onclick='agragarItemCompra(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
+            "</div></div>"
+        }
+      },
+    ],
+  });
+}
+//************************************************/
+//*********Funcion para agragar nuevo item********/
+//*************al registro de compra**************/
+function agragarItemCompra(id) {
   $.ajax({
     url: "assets/app/producto/producto_controller.php?op=verproducto",
     method: "POST",
@@ -169,7 +216,7 @@ function cargarproducto(id) {
               '<input type="text" class="form-control"  id="costact'+numero+'" value="'+opt.Costo_unidad+'" disabled>'+
             '</td>'+
             '<td>'+
-              '<input type="number" class="form-control" id="countact'+numero+'" value= "1" min="1" max='+opt.Cantidad+'>'+
+              '<input type="number" class="form-control" onclick="calcularSubTotales(`'+numero+'`)" id="countact'+numero+'" value= "1" min="1" max='+opt.Cantidad+'>'+
             '</td>'+
             '<td>'+
               '<input type="text" class="form-control"  id="costacttotal'+numero+'" value="'+opt.Costo_unidad+'" disabled>'+
@@ -181,14 +228,7 @@ function cargarproducto(id) {
             '</td>'+
           '</tr>');    
           $('#productomodal').modal('hide');
-          leftSide()
-          $(document).on('change', `#countact${numero}`, function () {
-            countact  = $('#countact'+numero).val();
-            costact = $('#costact'+numero).val();
-            nuevomonto = costact * countact
-            $(`#costacttotal${numero}`).val(nuevomonto.toFixed(2));
-            leftSide()
-          });
+          verTotalesGenerales()
         } else {
           Swal.fire({
             icon: 'warning',
@@ -197,33 +237,28 @@ function cargarproducto(id) {
             timer: 2000,
             })
         } 
-    }); 
-
+      }); 
     }
   });
 }
 
-function cargarDataProveedor(id) {
-  $.ajax({
-    url: "assets/app/proveedor/proveedor_controller.php?op=verproveedor",
-    method: "POST",
-    dataType: "json",
-    data: { id: id },
-    success: function (data) {
-      $.each(data, function(idx, opt) { 
-        $('#sujeto').val(opt.codigo);
-        $('#nombresujeto').text(opt.nombre);
-        $('#proveedormodal').modal('hide');
-    }); 
-
-    }
-  });
+function calcularSubTotales(nitem) {    
+  countact  = $('#countact'+nitem).val();
+  costact = $('#costact'+nitem).val();
+  nuevomonto = costact * countact
+  $(`#costacttotal${nitem}`).val(nuevomonto.toFixed(2));
+  verTotalesGenerales()
 }
 
-function leftSide() {
+
+function verTotalesGenerales() {
   let cant = 0;
   let subtotal = 0;
+  let iva = 0;
+  let total = 0;
   array = []
+  impuesto = Number($('#impuesto').val());
+  excento = Number($('#excento').val());
   for (i = 1; i <= numero; i++) {
     subarray = []
     countact = $("#countact" + (i)).val()
@@ -232,33 +267,23 @@ function leftSide() {
       subarray['costacttotal'] = Number($("#costacttotal" + (i)).val()); 
       array.push(subarray);
     }
-    //cant += subarray['countact'];
-    //subtotal += subarray['costacttotal'];
   }
-  console.log(array);
-  //$('#pcant').text(cant);
-  //$('#subtotal').text(subtotal.toFixed(2));
-}
-
-function reset() {
-  array = []
-  ncolumn = document.getElementsByName("ncolumn");
-  ndata = ncolumn.length;
-  for (i = 1; i <= ndata; i++) {
-    countact = $("#countact" + (i)).val()
-    if (countact !== undefined) {
-      subarray = []
-      subarray['idproducto'] = $("#idproducto" + (i)).val();
-      subarray['producto'] = $("#producto" + (i)).val(); 
-      subarray['costact'] = $("#costact" + (i)).val(); 
-      subarray['countact'] = $("#countact" + (i)).val();
-      subarray['costacttotal'] = $("#costacttotal" + (i)).val(); 
-      array.push(subarray);
-    }
-    
-    console.log(array);
+  array.forEach(data => {
+    cant += data.countact;
+    subtotal += data.costacttotal;
+  });
+  if (excento) {
+    subtotal = subtotal - excento;
+    iva = (subtotal * impuesto)/100;
+    total = subtotal + iva + excento;
+  } else {
+    iva = (subtotal * impuesto)/100;
+    total = subtotal + iva;
   }
-
+  $('#pcant').text(cant);
+  $('#subtotal').text(subtotal.toFixed(2));
+  $('#iva').text(iva.toFixed(2));
+  $('#total').text(total.toFixed(2));
 }
 
 

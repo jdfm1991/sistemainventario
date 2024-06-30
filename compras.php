@@ -77,15 +77,6 @@ $today = date('Y-m-d');
             <form id="comprasform">
               <div class="card-header">
                 <div class="row">
-                  <!--
-                    <div class="col-lg-12">
-                      <div class="row justify-content-md-end">
-                          <div class="col-lg-3">
-                              <b><span id="datecreate"><?php date('d-m-Y H:i:s') ?></span></b>
-                          </div>
-                      </div>
-                    </div>
-                    -->
                   <!--side-right Form header-->
                   <div class="col-sm-8">
                     <div class="row justify-content-start align-items-center g-2">
@@ -125,7 +116,7 @@ $today = date('Y-m-d');
                       </div>
                       <div class="col-4">
                         <div class="form-floating">
-                          <input type="text" id="excento" class="form-control form-control-sm" required>
+                          <input type="text" id="excento" class="form-control form-control-sm" >
                             <label for="excento" class="form-label">Monto Excento</label>
                         </div> 
                       </div>
@@ -149,8 +140,7 @@ $today = date('Y-m-d');
                       </div>
                       <label class="col-6"><b>Total</b></label>
                       <div class="col-6">
-                        <input type="hidden" id="total">
-                        <b><span id="tota" class="fs-6 form-text"></span></b>
+                        <b><span id="total" class="fs-6 form-text"></span></b>
                       </div>
 
                     </div>
@@ -175,7 +165,7 @@ $today = date('Y-m-d');
                         <th></th>
                       </tr>
                     </thead>
-                    <tbody id="cuerpo">
+                    <tbody>
 
                     </tbody>
                   </table>
