@@ -27,6 +27,7 @@ switch ($_GET["op"]) {
         $data = $proveedor->verDatosProveedor($id);
         foreach ($data as $data) {
             $sub_array = array();
+            $sub_array['id'] = $data['id'];
             $sub_array['nombre'] = $data['nombre'];
             $sub_array['codigo'] = $data['codigo'];
             $dato[] = $sub_array;

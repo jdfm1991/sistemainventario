@@ -119,6 +119,21 @@ $(document).ready(function () {
     column.remove();
     verTotalesGenerales()
   });
+  $('#comprasform').submit(function (e) { 
+    e.preventDefault();
+    idsujeto = $('#idsujeto').val();
+    usuario = $('#usuario').val();
+    documento = $('#documento').val();
+    impuesto = $('#impuesto').val();
+    excento = $('#excento').val();
+    fecha = $('#fecha').val();
+    items = $('#nitems').text();
+    cant = $('#pcant').text();
+    subtotal = $('#subtotal').text();
+    base = $('#base').text();
+    iva = $('#iva').text();
+    total = $('#total').text();
+  });
 });
 
 //************************************************/
@@ -157,6 +172,7 @@ function cargarDataProveedor(id) {
     data: { id: id },
     success: function (data) {
       $.each(data, function(idx, opt) { 
+        $('#idsujeto').val(opt.id);
         $('#sujeto').val(opt.codigo);
         $('#nombresujeto').text(opt.nombre);
         $('#proveedormodal').modal('hide');
@@ -241,7 +257,9 @@ function agragarItemCompra(id) {
     }
   });
 }
-
+//************************************************/
+//********Funcion para calcular los totales*******/
+//****************de cada producto****************/
 function calcularSubTotales(nitem) {    
   countact  = $('#countact'+nitem).val();
   costact = $('#costact'+nitem).val();
@@ -249,16 +267,20 @@ function calcularSubTotales(nitem) {
   $(`#costacttotal${nitem}`).val(nuevomonto.toFixed(2));
   verTotalesGenerales()
 }
-
-
+//************************************************/
+//*********Funcion para cargar los totales********/
+//*****************de la factura******************/
 function verTotalesGenerales() {
   let cant = 0;
   let subtotal = 0;
+  let base = 0;
   let iva = 0;
   let total = 0;
+  let items = 0;
   array = []
   impuesto = Number($('#impuesto').val());
   excento = Number($('#excento').val());
+  items = $itemcolumn.children().length;
   for (i = 1; i <= numero; i++) {
     subarray = []
     countact = $("#countact" + (i)).val()
@@ -273,15 +295,18 @@ function verTotalesGenerales() {
     subtotal += data.costacttotal;
   });
   if (excento) {
-    subtotal = subtotal - excento;
-    iva = (subtotal * impuesto)/100;
-    total = subtotal + iva + excento;
+    base = subtotal - excento;
+    iva = (base * impuesto)/100;
+    total = base + iva + excento;
   } else {
-    iva = (subtotal * impuesto)/100;
-    total = subtotal + iva;
+    base = subtotal;
+    iva = (base * impuesto)/100;
+    total = base + iva;
   }
+  $('#nitems').text(items);
   $('#pcant').text(cant);
   $('#subtotal').text(subtotal.toFixed(2));
+  $('#base').text(base.toFixed(2));
   $('#iva').text(iva.toFixed(2));
   $('#total').text(total.toFixed(2));
 }

@@ -7,12 +7,12 @@ require_once("inventario_model.php");
 
 $inventario = new Inventario();
 
-$id_producto = (isset($_POST['id_producto'])) ? $_POST['id_producto'] : '5';
-$cantidad = (isset($_POST['cantidad'])) ? $_POST['cantidad'] : '2';
-$movimiento = (isset($_POST['movimiento'])) ? $_POST['movimiento'] : '1';
-$producto = (isset($_POST['producto'])) ? $_POST['producto'] : '2';
-$comentario = (isset($_POST['comentario'])) ? $_POST['comentario'] : 'cosaa';
-$usuario = (isset($_POST['usuario'])) ? $_POST['usuario'] : '1';
+$id_producto = (isset($_POST['id_producto'])) ? $_POST['id_producto'] : '';
+$cantidad = (isset($_POST['cantidad'])) ? $_POST['cantidad'] : '';
+$movimiento = (isset($_POST['movimiento'])) ? $_POST['movimiento'] : '';
+$producto = (isset($_POST['producto'])) ? $_POST['producto'] : '';
+$comentario = (isset($_POST['comentario'])) ? $_POST['comentario'] : '';
+$usuario = (isset($_POST['usuario'])) ? $_POST['usuario'] : '';
 
 switch ($_GET["op"]) {
     case 'vermovimiento':

@@ -80,16 +80,25 @@ $today = date('Y-m-d');
                   <!--side-right Form header-->
                   <div class="col-sm-8">
                     <div class="row justify-content-start align-items-center g-2">
+                      <input type="hidden" id="idsujeto">
                       <div class="col-sm-3">
                         <label for="sujeto" class="col-form-label">Proveedor</label>
                       </div>
                       <div class="col-sm-4">
-                        <input type="text" id="sujeto" class="form-control" placeholder="R.I.F ó D.N.I" required>
+                        <input type="text" id="sujeto" class="form-control" placeholder="R.I.F ó D.N.I" required disabled>
                       </div>
                       <div class="col-sm-1">
                         <div class="d-grid gap-2 d-md-block btn-group-sm">
                           <button id="btnsujeto" class="btn btn-primary" type="button"><i class="bi bi-search"></i></button>
                         </div>
+                      </div>
+                      <div class="col-3">
+                        <div class="form-floating">
+                            <select id="impuesto" class="form-select form-select-sm" required>
+                            <!--Carga Mediante Ajax-->
+                            </select>
+                            <label for="impuesto" class="form-label">Alicuota</label>
+                        </div> 
                       </div>
                       <div class="col-sm-12">
                         <b><span id="nombresujeto" class="fs-6 form-text mx-5"></span></b>
@@ -100,12 +109,10 @@ $today = date('Y-m-d');
                       <div class="col-sm-5">
                         <input type="text" id="documento" class="form-control" placeholder="N# Factura" required>
                       </div>
-                      <div class="col-3">
+                      <div class="col-4">
                         <div class="form-floating">
-                            <select id="impuesto" class="form-select form-select-sm" required>
-                            <!--Carga Mediante Ajax-->
-                            </select>
-                            <label for="impuesto" class="form-label">Alicuota</label>
+                          <input type="text" id="excento" class="form-control form-control-sm" >
+                            <label for="excento" class="form-label">Monto Excento</label>
                         </div> 
                       </div>
                       <div class="col-4">
@@ -114,32 +121,34 @@ $today = date('Y-m-d');
                       <div class="col-4">
                         <input type="date" id="fecha" class="form-control" value=<?php echo $today; ?> max=<?php echo $today; ?> required>
                       </div>
-                      <div class="col-4">
-                        <div class="form-floating">
-                          <input type="text" id="excento" class="form-control form-control-sm" >
-                            <label for="excento" class="form-label">Monto Excento</label>
-                        </div> 
-                      </div>
                     </div>
 
                   </div>
                   <!--side-left Form header-->
                   <div class="col-sm-4">
                     <div class="row justify-content-start align-items-center g-2">
+                      <label class="col-sm-8"><b>N° de Items</b></label>
+                      <div class="col-sm-4">
+                        <b><span id="nitems" class="fs-6 form-text"></span></b>
+                      </div>
                       <label class="col-sm-8"><b>Total Producto</b></label>
                       <div class="col-sm-4">
                         <b><span id="pcant" class="fs-6 form-text"></span></b>
                       </div>
-                      <label class="col-6"><b>Sub-Total</b></label>
-                      <div class="col-6">
+                      <label class="col-8"><b>Sub-Total</b></label>
+                      <div class="col-4">
                         <b><span id="subtotal" class="fs-6 form-text"></span></b>
                       </div>
-                      <label class="col-6"><b>Impuestos</b></label>
-                      <div class="col-6">
+                      <label class="col-8"><b>Base Imponible</b></label>
+                      <div class="col-4">
+                        <b><span id="base" class="fs-6 form-text"></span></b>
+                      </div>
+                      <label class="col-8"><b>Impuestos</b></label>
+                      <div class="col-4">
                         <b><span id="iva" class="fs-6 form-text"></span></b>
                       </div>
-                      <label class="col-6"><b>Total</b></label>
-                      <div class="col-6">
+                      <label class="col-8"><b>Total</b></label>
+                      <div class="col-4">
                         <b><span id="total" class="fs-6 form-text"></span></b>
                       </div>
 
@@ -165,7 +174,7 @@ $today = date('Y-m-d');
                         <th></th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="cuerpo">
 
                     </tbody>
                   </table>
@@ -173,8 +182,8 @@ $today = date('Y-m-d');
               </div>
               <div class="card-footer text-muted">
                 <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <button id="save" class="btn btn-outline-primary" type="submit"><i class="bi bi-hdd"></i>Registrar</button>
-                  <button id="clean" class="btn btn-outline-danger" type="button"><i class="bi bi-trash2"></i>Cancelar</button>
+                  <button id="clean" class="btn btn-outline-danger" type="button"><i class="bi bi-x-octagon"></i>Cancelar</button>
+                  <button class="btn btn-outline-primary" type="submit"><i class="bi bi-hdd"></i>Registrar</button>
                 </div>
               </div>
             </form>
