@@ -4,7 +4,7 @@ require_once("../../../config/conexion.php");
 class Compras extends Conectar
 {
 
-  public function registrarCompra($idsujeto,$usuario,$documento,$fecha,$fecha2,$items,$cant,$subtotal,$excento,$base,$impuesto,$iva,$total)
+  public function registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -27,6 +27,58 @@ class Compras extends Conectar
     $sql->bindValue(11, $impuesto);
     $sql->bindValue(12, $iva);
     $sql->bindValue(13, $total);
+    return $sql->execute();
+  }
+
+  public function tomarExistencia($producto)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT Cantidad FROM producto WHERE id_producto=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $producto);
+    $sql->execute();
+    return ($sql->fetch(PDO::FETCH_ASSOC)['Cantidad']);
+  }
+
+  public function guardarDatosProducto($producto, $cantidad, $costoinventario)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    ///QUERY
+    $sql = "UPDATE producto SET Cantidad=?,valor_inventario=? WHERE id_producto=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $cantidad);
+    $sql->bindValue(2, $costoinventario);
+    $sql->bindValue(3, $producto);
+    return $sql->execute();
+  }
+
+  public function guardarDetalleCompra($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $data = NULL;
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "INSERT INTO movimiento_inventario(codigo_producto, codigo_tmovi, fecha_movimiento, id_usuario, cantidad, cant_ant, nueva_cant) VALUES (?,?,?,?,?,?,?)";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $producto);
+    $sql->bindValue(2, $Tipo_movimiento);
+    $sql->bindValue(3, $fecha2);
+    $sql->bindValue(4, $usuario);
+    $sql->bindValue(5, $cant);
+    $sql->bindValue(6, $existencia);
+    $sql->bindValue(7, $cantidad);
     return $sql->execute();
   }
 }

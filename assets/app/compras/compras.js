@@ -35,7 +35,7 @@ $(document).ready(function () {
   //************************************************/
   //**********Accion para el boton Cancelar*********/
   //************************************************/
-  $('#clean').click(function (e) { 
+  $('#clean').click(function (e) {
     e.preventDefault();
     $('#comprasform').get(0).reset();
     $('#rcomprastable tbody').empty();
@@ -49,7 +49,7 @@ $(document).ready(function () {
   $('#btnsujeto').click(function (e) {
     e.preventDefault();
     cargarListaProveedores()
-    $('#proveedormodal').modal('show'); 
+    $('#proveedormodal').modal('show');
   });
   //************************************************/
   //**********Accion para Cargar la tase de*********/
@@ -58,19 +58,19 @@ $(document).ready(function () {
     url: "assets/app/herramientas/herramientas_controller.php?op=impuestos",
     method: "POST",
     dataType: "json",
-    success: function(data) {
+    success: function (data) {
       $('#impuesto').append('<option value="">Alicuota</option>');
-        $.each(data, function(idx, opt) {
-          if (opt.estatus==1) {
-            $('#impuesto').append('<option value="'+opt.impuesto+'" selected>'+opt.impuesto+'</option>');
-          }else{
-            $('#impuesto').append('<option value="'+opt.impuesto+'">'+opt.impuesto+'</option>');
-          }
-            
-        });
+      $.each(data, function (idx, opt) {
+        if (opt.estatus == 1) {
+          $('#impuesto').append('<option value="' + opt.impuesto + '" selected>' + opt.impuesto + '</option>');
+        } else {
+          $('#impuesto').append('<option value="' + opt.impuesto + '">' + opt.impuesto + '</option>');
+        }
+
+      });
     }
   });
-  $('#excento').keyup(function (e) { 
+  $('#excento').keyup(function (e) {
     verTotalesGenerales()
   });
   //************************************************/
@@ -87,7 +87,7 @@ $(document).ready(function () {
         html: '<h2>¡Antes debe Escoger un Proveedor!</h2>',
         showConfirmButton: false,
         timer: 2000,
-        })
+      })
     } else {
       if (!documento) {
         Swal.fire({
@@ -95,7 +95,7 @@ $(document).ready(function () {
           html: '<h2>¡Antes debe colocar un numero de factura!</h2>',
           showConfirmButton: false,
           timer: 2000,
-          })
+        })
       } else {
         if (!impuesto) {
           Swal.fire({
@@ -103,11 +103,11 @@ $(document).ready(function () {
             html: '<h2>¡Antes de Carga Algun Producto Debe Escoger Una Alicuota!</h2>',
             showConfirmButton: false,
             timer: 2000,
-            })
+          })
         } else {
           cargarListaProductos()
           $('#productomodal').modal('show');
-        } 
+        }
       }
     }
   });
@@ -119,8 +119,10 @@ $(document).ready(function () {
     column.remove();
     verTotalesGenerales()
   });
-  $('#comprasform').submit(function (e) { 
+
+  $('#comprasform').submit(function (e) {
     e.preventDefault();
+    array = []
     idsujeto = $('#idsujeto').val();
     usuario = $('#usuario').val();
     documento = $('#documento').val();
@@ -133,6 +135,48 @@ $(document).ready(function () {
     base = $('#base').text();
     iva = $('#iva').text();
     total = $('#total').text();
+    
+    for (i = 1; i <= numero; i++) {
+      subarray = {}
+      countact = $("#countact" + (i)).val()
+      if (countact !== undefined) {
+        subarray['idproducto'] = $("#idproducto" + (i)).val();
+        subarray['producto'] = $("#producto" + (i)).val();
+        subarray['costact'] =$("#costact" + (i)).val();
+        subarray['countact'] = $("#countact" + (i)).val();
+        subarray['costacttotal'] =$("#costacttotal" + (i)).val();
+        array.push(subarray);
+      }
+    }
+    
+    var datos = new FormData();
+    datos.append('idsujeto', idsujeto)
+    datos.append('usuario', usuario)
+    datos.append('documento', documento)
+    datos.append('impuesto', impuesto)
+    datos.append('excento', excento)
+    datos.append('fecha', fecha)
+    datos.append('items', items)
+    datos.append('cant', cant)
+    datos.append('subtotal', subtotal)
+    datos.append('base', base)
+    datos.append('iva', iva)
+    datos.append('total', total)
+    datos.append('producto', JSON.stringify(array))
+    
+    $.ajax({
+      url: "assets/app/compras/compras_controller.php?op=registar",
+      type: "POST",
+      dataType: "json",
+      data: datos,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function (data) {
+        console.log(data);
+      }
+    });
+    
   });
 });
 
@@ -151,7 +195,8 @@ function cargarListaProveedores() {
     columns: [
       { data: "nombre" },
       { data: "codigo" },
-      { data: "id",
+      {
+        data: "id",
         "render": function (data, type, row) {
           return "<div class='text-center'><div class='btn-group'>" +
             "<button onclick='cargarDataProveedor(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
@@ -171,12 +216,12 @@ function cargarDataProveedor(id) {
     dataType: "json",
     data: { id: id },
     success: function (data) {
-      $.each(data, function(idx, opt) { 
+      $.each(data, function (idx, opt) {
         $('#idsujeto').val(opt.id);
         $('#sujeto').val(opt.codigo);
         $('#nombresujeto').text(opt.nombre);
         $('#proveedormodal').modal('hide');
-    }); 
+      });
 
     }
   });
@@ -217,32 +262,32 @@ function agragarItemCompra(id) {
     dataType: "json",
     data: { id: id },
     success: function (data) {
-      $.each(data, function(idx, opt) {
+      $.each(data, function (idx, opt) {
         if (opt.Costo_unidad > 0) {
-          numero = $itemcolumn.children().length + 1 ;
+          numero = $itemcolumn.children().length + 1;
           $('#cuerpo').append(
-            '<tr name=ncolumn>'+
-            '<td>'+
-              '<input type="text" class="form-control" id="idproducto'+numero+'" value="'+opt.id_producto+'" disabled>'+
-            '</td>'+
-            '<td>'+
-              '<input type="text" class="form-control" id="producto'+numero+'" value="'+opt.Descripcion+'" disabled>'+
-            '</td>'+
-            '<td>'+
-              '<input type="text" class="form-control"  id="costact'+numero+'" value="'+opt.Costo_unidad+'" disabled>'+
-            '</td>'+
-            '<td>'+
-              '<input type="number" class="form-control" onclick="calcularSubTotales(`'+numero+'`)" id="countact'+numero+'" value= "1" min="1" max='+opt.Cantidad+'>'+
-            '</td>'+
-            '<td>'+
-              '<input type="text" class="form-control"  id="costacttotal'+numero+'" value="'+opt.Costo_unidad+'" disabled>'+
-            '</td>'+
-            '<td>'+
-              '<button id="delcol" type="button" class="btn btn-danger">'+
-                '<i class="bi bi-x-circle"></i>'+
-              '</button>'+
-            '</td>'+
-          '</tr>');    
+            '<tr name=ncolumn>' +
+            '<td>' +
+            '<input type="text" class="form-control" id="idproducto' + numero + '" value="' + opt.id_producto + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="form-control" id="producto' + numero + '" value="' + opt.Descripcion + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="1" max=' + opt.Cantidad + '>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<button id="delcol" type="button" class="btn btn-danger">' +
+            '<i class="bi bi-x-circle"></i>' +
+            '</button>' +
+            '</td>' +
+            '</tr>');
           $('#productomodal').modal('hide');
           verTotalesGenerales()
         } else {
@@ -251,18 +296,18 @@ function agragarItemCompra(id) {
             html: '<h2>¡No Se Puede Cargar Productos Con Costo 0!</h2>',
             showConfirmButton: false,
             timer: 2000,
-            })
-        } 
-      }); 
+          })
+        }
+      });
     }
   });
 }
 //************************************************/
 //********Funcion para calcular los totales*******/
 //****************de cada producto****************/
-function calcularSubTotales(nitem) {    
-  countact  = $('#countact'+nitem).val();
-  costact = $('#costact'+nitem).val();
+function calcularSubTotales(nitem) {
+  countact = $('#countact' + nitem).val();
+  costact = $('#costact' + nitem).val();
   nuevomonto = costact * countact
   $(`#costacttotal${nitem}`).val(nuevomonto.toFixed(2));
   verTotalesGenerales()
@@ -286,7 +331,7 @@ function verTotalesGenerales() {
     countact = $("#countact" + (i)).val()
     if (countact !== undefined) {
       subarray['countact'] = Number($("#countact" + (i)).val());
-      subarray['costacttotal'] = Number($("#costacttotal" + (i)).val()); 
+      subarray['costacttotal'] = Number($("#costacttotal" + (i)).val());
       array.push(subarray);
     }
   }
@@ -296,11 +341,11 @@ function verTotalesGenerales() {
   });
   if (excento) {
     base = subtotal - excento;
-    iva = (base * impuesto)/100;
+    iva = (base * impuesto) / 100;
     total = base + iva + excento;
   } else {
     base = subtotal;
-    iva = (base * impuesto)/100;
+    iva = (base * impuesto) / 100;
     total = base + iva;
   }
   $('#nitems').text(items);
