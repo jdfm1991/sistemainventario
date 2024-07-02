@@ -43,15 +43,13 @@ $today = date('Y-m-d');
           <table id="comprastable" class="table table-striped" style="width:100%">
             <thead>
               <tr>
-                <th scope="col">Nombre de Producto</th>
-                <th scope="col">Tipo de Movimiento</th>
-                <th scope="col">Fecha movimiento</th>
-                <th scope="col">Comentario</th>
-                <th scope="col">Usuario</th>
-                <th scope="col">Cantidad anterior</th>
-                <th scope="col">Cantidad</th>
-                <th scope="col">Nueva Cantidad</th>
-                <th scope="col"></th>
+                <th scope="col">Nombre de Proveedor</th>
+                <th scope="col">Fecha de Compra</th>
+                <th scope="col">Nuemmero de Dcumento</th>
+                <th scope="col">Items de Factura</th>
+                <th scope="col">Productos Facturados</th>
+                <th scope="col">Total Facturado</th>
+                <th scope="col">Nombre de Usuario</th>
               </tr>
             </thead>
             <tbody>
@@ -111,7 +109,7 @@ $today = date('Y-m-d');
                       </div>
                       <div class="col-4">
                         <div class="form-floating">
-                          <input type="text" id="excento" class="form-control form-control-sm" >
+                          <input type="text" id="excento" name="excento" class="form-control form-control-sm" >
                             <label for="excento" class="form-label">Monto Excento</label>
                         </div> 
                       </div>

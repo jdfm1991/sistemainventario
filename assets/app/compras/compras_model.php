@@ -4,14 +4,14 @@ require_once("../../../config/conexion.php");
 class Compras extends Conectar
 {
 
-  public function registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total)
+  public function registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "INSERT INTO operacion_inventario(sujeto, usuario, documento, fecha_o, fecha_r, cant_items, cant_producto, subtotal, excento, base, impuesto, iva, total) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO operacion_inventario(sujeto, usuario, documento, fecha_o, fecha_r, cant_items, cant_producto, subtotal, excento, base, impuesto, iva, total, tipo_operacion ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->bindValue(1, $idsujeto);
@@ -27,6 +27,7 @@ class Compras extends Conectar
     $sql->bindValue(11, $impuesto);
     $sql->bindValue(12, $iva);
     $sql->bindValue(13, $total);
+    $sql->bindValue(14, $Tipo_movimiento);
     return $sql->execute();
   }
 
@@ -80,5 +81,38 @@ class Compras extends Conectar
     $sql->bindValue(6, $existencia);
     $sql->bindValue(7, $cantidad);
     return $sql->execute();
+  }
+
+  public function verDatosCompras()
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT A.id, B.nombre, C.nom_usuario, C.ape_usuario, D.Movimiento, documento, fecha_o, fecha_r, cant_items, cant_producto, subtotal, excento, base, iva, total 
+    FROM operacion_inventario AS A 
+    INNER JOIN sujeto AS B ON B.id=A.sujeto 
+    INNER JOIN usuario AS C ON C.id_cliente=A.usuario 
+    INNER JOIN tipo_movimiento AS D ON D.id=A.tipo_operacion 
+    WHERE tipo_operacion = 4 ORDER BY fecha_r DESC";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->execute();
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function verDetallesCompras()
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT B.Descripcion, C.Movimiento, fecha_movimiento, comentario, D.nom_usuario, D.ape_usuario, cant_ant AS cantidad_anterior , A.cantidad, nueva_cant AS cantidad_actual FROM movimiento_inventario AS A INNER JOIN producto AS B ON A.codigo_producto=B.id_producto INNER JOIN tipo_movimiento AS C on A.codigo_tmovi=C.id INNER JOIN usuario as D on A.id_usuario=D.id_cliente ORDER BY fecha_movimiento DESC";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->execute();
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
   }
 }

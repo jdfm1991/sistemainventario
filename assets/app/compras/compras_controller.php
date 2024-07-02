@@ -23,11 +23,12 @@ $total = (isset($_POST['total'])) ? $_POST['total'] : '';
 $producto = (isset($_POST['producto'])) ? $_POST['producto'] : [];
 
 switch ($_GET["op"]) {
+
   case 'registar':
     $dato = array();
     $excento = ($excent) ? $excent : 0;
     $Tipo_movimiento = 4;
-    $compra = $compras->registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento,    $base, $impuesto, $iva, $total);
+    $compra = $compras->registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento,    $base, $impuesto, $iva, $total, $Tipo_movimiento);
     if ($compra) {
       $arr_prod = json_decode($producto, true);
       foreach ($arr_prod as $row) {
@@ -55,6 +56,30 @@ switch ($_GET["op"]) {
     } else {
       $dato['status']  = false;
       $dato['message'] = 'Error al Registrar la Compra';
+    }
+    echo json_encode($dato, JSON_UNESCAPED_UNICODE);
+    break;
+
+  case 'vercompras':
+    $dato = array();
+    $data = $compras->verDatosCompras();
+    foreach ($data as $data) {
+      $sub_array = array();
+      $sub_array['id'] = $data['id'];
+      $sub_array['Proveedor'] = $data['nombre'];
+      $sub_array['usuario'] = $data['nom_usuario'].' '.$data['ape_usuario'];
+      $sub_array['Movimiento'] = $data['Movimiento'];
+      $sub_array['documento'] = $data['documento'];
+      $sub_array['fecha_o'] = $data['fecha_o'];
+      $sub_array['fecha_r'] = $data['fecha_r'];
+      $sub_array['cant_items'] = number_format($data['cant_items'], 2);
+      $sub_array['cant_producto'] = number_format($data['cant_producto'], 2);
+      $sub_array['subtotal'] = number_format($data['subtotal'], 2);
+      $sub_array['excento'] = number_format($data['excento'], 2);
+      $sub_array['base'] = number_format($data['base'], 2);
+      $sub_array['iva'] = number_format($data['iva'], 2);
+      $sub_array['total'] = number_format($data['total'], 2);
+      $dato[] = $sub_array;
     }
     echo json_encode($dato, JSON_UNESCAPED_UNICODE);
     break;

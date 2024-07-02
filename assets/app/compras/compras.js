@@ -11,6 +11,14 @@ $(document).ready(function () {
   $('#contenedor_ver_compra').hide();
   $('#contenedor_compra').hide();
   //************************************************/
+  //***********Funcion para Validar solo************/
+  //**************Entrada de Numeros****************/
+  $(function () {
+    $("input[name='excento']").on('input', function (e) {
+      $(this).val($(this).val().replace(/[^0-9.]/g, ''));
+    });
+  });
+  //************************************************/
   //*********Accion para el boton registrar*********/
   //*******************Comprar**********************/
   $('#rcompra').click(function (e) {
@@ -31,6 +39,7 @@ $(document).ready(function () {
     $('#vcompra').addClass('active');
     $('#contenedor_default').hide();
     $('#contenedor_ver_compra').show();
+    cargarListaComprasRealizadas()
   });
   //************************************************/
   //**********Accion para el boton Cancelar*********/
@@ -70,6 +79,9 @@ $(document).ready(function () {
       });
     }
   });
+  //************************************************/
+  //**********Accion para calculos los montos*******/
+  //*************teniendo un monto excento**********/
   $('#excento').keyup(function (e) {
     verTotalesGenerales()
   });
@@ -119,7 +131,9 @@ $(document).ready(function () {
     column.remove();
     verTotalesGenerales()
   });
-
+  //************************************************/
+  //**********Accion para Registar compra***********/
+  //*****************de los producro****************/
   $('#comprasform').submit(function (e) {
     e.preventDefault();
     array = []
@@ -135,7 +149,6 @@ $(document).ready(function () {
     base = $('#base').text();
     iva = $('#iva').text();
     total = $('#total').text();
-    
     for (i = 1; i <= numero; i++) {
       subarray = {}
       countact = $("#countact" + (i)).val()
@@ -148,7 +161,6 @@ $(document).ready(function () {
         array.push(subarray);
       }
     }
-    
     var datos = new FormData();
     datos.append('idsujeto', idsujeto)
     datos.append('usuario', usuario)
@@ -163,20 +175,49 @@ $(document).ready(function () {
     datos.append('iva', iva)
     datos.append('total', total)
     datos.append('producto', JSON.stringify(array))
-    
-    $.ajax({
-      url: "assets/app/compras/compras_controller.php?op=registar",
-      type: "POST",
-      dataType: "json",
-      data: datos,
-      cache: false,
-      contentType: false,
-      processData: false,
-      success: function (data) {
-        console.log(data);
-      }
-    });
-    
+    if (!Array.isArray(array) || array.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        html: '<h2>¡Debe Agregar al Menos Agregar Un Producto a la Compra!</h2>',
+        showConfirmButton: false,
+        timer: 2000,
+      })
+    } else {
+      $.ajax({
+        url: "assets/app/compras/compras_controller.php?op=registar",
+        type: "POST",
+        dataType: "json",
+        data: datos,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          if (data.status == true) {
+            Swal.fire({
+              icon: 'success',
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+            $('#comprasform').get(0).reset();
+            $('#rcomprastable tbody').empty();
+            $('#nitems').text('');
+            $('#pcant').text('');
+            $('#subtotal').text('');
+            $('#base').text('');
+            $('#iva').text('');
+            $('#total').text('');
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+        }
+      });
+    }
   });
 });
 
@@ -354,6 +395,35 @@ function verTotalesGenerales() {
   $('#base').text(base.toFixed(2));
   $('#iva').text(iva.toFixed(2));
   $('#total').text(total.toFixed(2));
+}
+
+//************************************************/
+//**********Funcion para cargar la lista**********/
+//***************de los proveedores***************/
+function cargarListaComprasRealizadas() {
+  $('#comprastable').DataTable().destroy();
+  comprastable = $('#comprastable').DataTable({
+    responsive: true,
+    pageLength: 10,
+    ajax: {
+      url: "assets/app/compras/compras_controller.php?op=vercompras",
+      method: 'POST',
+      dataSrc: ""
+    },
+    columns: [
+      { data: "Proveedor" },
+      { data: "fecha_o" },
+      { data: "documento" },
+      { data: "cant_items" },
+      { data: "cant_producto" },
+      { data: "total" },
+      { data: "usuario" },
+    ],
+    order: {
+      name:'fecha_o',
+      dir:'desc'
+    }
+  })
 }
 
 
