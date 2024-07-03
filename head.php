@@ -25,10 +25,7 @@ session_start();
   <script src="assets/js/sweetalert2/sweetalert2.min.js"></script>
   <link rel="stylesheet" href="assets/js/sweetalert2/sweetalert2.min.css">
 </head>
-
-
 <body>
-
   <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid bg-success bg-gradient menu">
       <a class="navbar-brand" href="#">Sistema de inventario</a>
@@ -46,6 +43,10 @@ session_start();
 
               <li class="nav-item">
                 <a class="nav-link" href="compras.php">Compras</a>
+              </li>
+
+              <li class="nav-item">
+                <a class="nav-link" href="ventas.php">Ventas</a>
               </li>
 
               <li class="nav-item">
