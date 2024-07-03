@@ -4,7 +4,7 @@ require_once("../../../config/conexion.php");
 class Producto extends Conectar
 {
 
-  public function guardarDatosProductos($product, $categoria, $familia, $ubicacion, $unidad, $cantidad, $costo_unidad, $valor_inventario)
+  public function guardarDatosProductos($product, $categoria, $familia, $ubicacion, $unidad, $costo_unidad, $valor_inventario)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -12,7 +12,7 @@ class Producto extends Conectar
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "INSERT INTO producto(Descripcion, Categoria, Familia, Ubicacion, Unidad, Cantidad, Costo_unidad, valor_inventario) VALUES (?,?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO producto(Descripcion, Categoria, Familia, Ubicacion, Unidad, Costo_unidad, precio_unidad) VALUES (?,?,?,?,?,?,?)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->bindValue(1, $product);
@@ -20,9 +20,8 @@ class Producto extends Conectar
     $sql->bindValue(3, $familia);
     $sql->bindValue(4, $ubicacion);
     $sql->bindValue(5, $unidad);
-    $sql->bindValue(6, $cantidad);
-    $sql->bindValue(7, $costo_unidad);
-    $sql->bindValue(8, $valor_inventario);
+    $sql->bindValue(6, $costo_unidad);
+    $sql->bindValue(7, $valor_inventario);
     return $sql->execute();
   }
 
@@ -131,14 +130,14 @@ class Producto extends Conectar
     return $sql;
   }
 
-  public function actualizarDatosProductos($id, $product, $categoria, $familia, $ubicacion, $unidad, $cantidad, $costo_unidad, $valor_inventario)
+  public function actualizarDatosProductos($id, $product, $categoria, $familia, $ubicacion, $unidad, $costo_unidad, $valor_inventario, $excento)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
     $conectar = parent::conexion();
     parent::set_names();
     ///QUERY
-    $sql = "UPDATE producto SET Descripcion=?,Categoria=?,Familia=?,Ubicacion=?,Unidad=?,Cantidad=?,Costo_unidad=?,valor_inventario=? WHERE id_producto=?";
+    $sql = "UPDATE producto SET Descripcion=?,Categoria=?,Familia=?,Ubicacion=?,Unidad=?,Costo_unidad=?,precio_unidad=?,excento=? WHERE id_producto=?";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->bindValue(1, $product);
@@ -146,9 +145,9 @@ class Producto extends Conectar
     $sql->bindValue(3, $familia);
     $sql->bindValue(4, $ubicacion);
     $sql->bindValue(5, $unidad);
-    $sql->bindValue(6, $cantidad);
-    $sql->bindValue(7, $costo_unidad);
-    $sql->bindValue(8, $valor_inventario);
+    $sql->bindValue(6, $costo_unidad);
+    $sql->bindValue(7, $valor_inventario);
+    $sql->bindValue(8, $excento);
     $sql->bindValue(9, $id);
     return $sql->execute();
   }

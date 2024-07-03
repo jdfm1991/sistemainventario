@@ -127,11 +127,11 @@ $(document).ready(function () {
   //***************del input de cantidad************/
   $('#cantidad').keyup(function (e) {
     e.preventDefault();
-    cantidad = $('#cantidad').val();
-    costo_unidad = $('#costo_unidad').val();
+    cantidad = Number($('#cantidad').val());
+    costo_unidad = Number($('#costo_unidad').val());
     if (costo_unidad != '') {
-      monto = cantidad * costo_unidad
-      $('#valor_inventario').val(monto);
+      monto = costo_unidad + ((cantidad * costo_unidad) / 100)
+      $('#valor_inventario').val(monto.toFixed(4));
     }
   });
   //************************************************/
@@ -139,11 +139,11 @@ $(document).ready(function () {
   //***************del input de costo***************/
   $('#costo_unidad').keyup(function (e) {
     e.preventDefault();
-    cantidad = $('#cantidad').val();
-    costo_unidad = $('#costo_unidad').val();
+    cantidad = Number($('#cantidad').val());
+    costo_unidad = Number($('#costo_unidad').val());
     if (cantidad != '') {
-      monto = cantidad * costo_unidad
-      $('#valor_inventario').val(monto);
+      monto = costo_unidad + ((cantidad * costo_unidad) / 100)
+      $('#valor_inventario').val(monto.toFixed(4));
     }
   });
   //************************************************/
@@ -160,12 +160,14 @@ $(document).ready(function () {
     cantidad = $('#cantidad').val();
     costo_unidad = $('#costo_unidad').val();
     valor_inventario = $('#valor_inventario').val();
+    excento = document.getElementById('excento').checked;
     $.ajax({
       url: "assets/app/producto/producto_controller.php?op=guargarproducto",
       type: "POST",
       dataType: "json",
-      data: { id: id, producto: producto, categoria: categoria, familia: familia, ubicacion: ubicacion, unidad: unidad, cantidad: cantidad, costo_unidad: costo_unidad, valor_inventario: valor_inventario },
+      data: { id: id, producto: producto, categoria: categoria, familia: familia, ubicacion: ubicacion, unidad: unidad, cantidad: cantidad, costo_unidad: costo_unidad, valor_inventario: valor_inventario, excento:excento },
       success: function (data) {
+        console.log(data);
         if (data.status == true) {
           Swal.fire({
             icon: 'success',
@@ -181,7 +183,6 @@ $(document).ready(function () {
             $('#contenedor_fomulario').removeClass('col-5');
             $('#contenedor_tabla').removeClass('col-7');
             $('#btnproducto').show();
-            productotable.columns([4, 5, 6]).visible(true)
             productotable.ajax.reload(null, false);
           }, 1500);
         } else {
@@ -257,8 +258,12 @@ $(document).ready(function () {
           $('#cantidad').val(opt.Cantidad);
           $('#costo_unidad').val(opt.Costo_unidad);
           $('#valor_inventario').val(opt.valor_inventario);
+          if (opt.excento == 1) {
+            $('#excento').prop('checked', true);
+          } else {
+            $('#excento').prop('checked', false);
+          }
         });
-
         $('#contenedor_fomulario').addClass('col-5');
         $('#contenedor_tabla').addClass('col-7');
         $('#contenedor_fomulario').show();
@@ -277,6 +282,7 @@ function limpiarFormulario() {
   $('#cantidad').val('');
   $('#costo_unidad').val('');
   $('#valor_inventario').val('');
+  $('#excento').prop('checked', false);
 }
 
 function tomarId(id) {

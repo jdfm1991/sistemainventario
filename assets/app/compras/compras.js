@@ -396,7 +396,6 @@ function verTotalesGenerales() {
   $('#iva').text(iva.toFixed(2));
   $('#total').text(total.toFixed(2));
 }
-
 //************************************************/
 //**********Funcion para cargar la lista**********/
 //***************de los proveedores***************/

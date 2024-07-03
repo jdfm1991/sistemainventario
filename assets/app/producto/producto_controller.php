@@ -15,6 +15,7 @@ $unidad = (isset($_POST['unidad'])) ? $_POST['unidad'] : '';
 $cantidad = (isset($_POST['cantidad'])) ? $_POST['cantidad'] : '';
 $costo_unidad = (isset($_POST['costo_unidad'])) ? $_POST['costo_unidad'] : '';
 $valor_inventario = (isset($_POST['valor_inventario'])) ? $_POST['valor_inventario'] : '';
+$excent = (isset($_POST['excento'])) ? $_POST['excento'] : 'false';
 
 switch ($_GET["op"]) {
 
@@ -48,9 +49,10 @@ switch ($_GET["op"]) {
       $sub_array['Ubicacion'] = $data['Ubicacion'];
       $sub_array['Descripcion'] = $data['Descripcion'];
       $sub_array['Unidad'] = $data['Unidad'];
-      $sub_array['Cantidad'] = number_format($data['Cantidad'], 2);
+      $sub_array['Cantidad'] = number_format(30, 2);
       $sub_array['Costo_unidad'] = number_format($data['Costo_unidad'], 2);
-      $sub_array['valor_inventario'] = number_format($data['valor_inventario'], 2);
+      $sub_array['valor_inventario'] = number_format($data['precio_unidad'], 2);
+      $sub_array['excento'] = $data['excento'];
       $dato[] = $sub_array;
     }
     echo json_encode($dato, JSON_UNESCAPED_UNICODE);
@@ -106,8 +108,9 @@ switch ($_GET["op"]) {
 
   case 'guargarproducto':
     $dato = array();
+    $excento = ($excent == 'true') ? 1 : 0 ;
     if ($id) {
-      $data = $producto->actualizarDatosProductos($id, $product, $categoria, $familia, $ubicacion, $unidad, $cantidad, $costo_unidad, $valor_inventario);
+      $data = $producto->actualizarDatosProductos($id, $product, $categoria, $familia, $ubicacion, $unidad, $costo_unidad, $valor_inventario,$excento);
       if ($data) {
         $dato['status']  = true;
         $dato['message'] = 'Se Actualizo La Infomacion de Manera Satisfactoria';
@@ -116,7 +119,7 @@ switch ($_GET["op"]) {
         $dato['message'] = 'Error al Actualizar La Infomacion';
       }
     } else {
-      $data = $producto->guardarDatosProductos($product, $categoria, $familia, $ubicacion, $unidad, $cantidad, $costo_unidad, $valor_inventario);
+      $data = $producto->guardarDatosProductos($product, $categoria, $familia, $ubicacion, $unidad, $costo_unidad, $valor_inventario);
       if ($data) {
         $dato['status']  = true;
         $dato['message'] = 'Se Guardo La Infomacion de Manera Satisfactoria';
