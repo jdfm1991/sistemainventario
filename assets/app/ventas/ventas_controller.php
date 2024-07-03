@@ -3,9 +3,9 @@ session_name('intentario');
 session_start();
 date_default_timezone_set('america/caracas');
 require_once("../../../config/conexion.php");
-require_once("compras_model.php");
+require_once("ventas_model.php");
 
-$compras = new Compras();
+$ventas = new Ventas();
 
 $idsujeto = (isset($_POST['idsujeto'])) ? $_POST['idsujeto'] : '';
 $usuario = (isset($_POST['usuario'])) ? $_POST['usuario'] : '';
@@ -23,6 +23,11 @@ $total = (isset($_POST['total'])) ? $_POST['total'] : '';
 $producto = (isset($_POST['producto'])) ? $_POST['producto'] : [];
 
 switch ($_GET["op"]) {
+
+  case 'siguientefactura':
+    $dato = $ventas->verSiguienteFactura();
+    echo json_encode($dato, JSON_UNESCAPED_UNICODE);
+    break;
 
   case 'registar':
     $dato = array();

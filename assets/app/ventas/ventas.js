@@ -28,6 +28,17 @@ $(document).ready(function () {
     $('#rcompra').addClass('active');
     $('#contenedor_default').hide();
     $('#contenedor_ver_compra').hide();
+    //************************************************/
+    //**********Accion para Cargar numero de**********/
+    //**************la siguiente factura**************/
+    $.ajax({
+      url: "assets/app/ventas/ventas_controller.php?op=siguientefactura",
+      method: "POST",
+      dataType: "json",
+      success: function (data) {
+        $('#documento').text(data);
+      }
+    });
   });
   //************************************************/
   //*************Accion para el boton Ver***********/

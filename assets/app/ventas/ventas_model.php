@@ -1,8 +1,24 @@
 <?php
 require_once("../../../config/conexion.php");
 
-class Compras extends Conectar
+class Ventas extends Conectar
 {
+
+  public function verSiguienteFactura()
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT CONCAT('F-',LPAD(COUNT(*) + 1, 4, '0'), '/', YEAR(NOW())) AS n_fact
+            FROM operacion_inventario
+            WHERE year(fecha_o) = YEAR(NOW()) AND tipo_operacion=5";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->execute();
+    return ($sql->fetch(PDO::FETCH_ASSOC)['n_fact']);
+  }
 
   public function registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento)
   {
