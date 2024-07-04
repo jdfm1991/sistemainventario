@@ -8,6 +8,7 @@ if (!$_SESSION) {
 }
 $today = date('Y-m-d');
 ?>
+<input type="checkbox" name="" id="">
 <div class="container-md mt-5">
   <div class="row justify-content-center g-2">
     <div id="contenedor_botones" class="col-sm-3">
