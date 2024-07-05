@@ -20,7 +20,7 @@ class Ventas extends Conectar
     return ($sql->fetch(PDO::FETCH_ASSOC)['n_fact']);
   }
 
-  public function registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento)
+  public function registrarVenta($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -78,7 +78,7 @@ class Ventas extends Conectar
     return $sql->execute();
   }
 
-  public function guardarDetalleCompra($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad)
+  public function guardarDetalleVenta($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -99,7 +99,7 @@ class Ventas extends Conectar
     return $sql->execute();
   }
 
-  public function verDatosCompras()
+  public function verDatosventas()
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -111,7 +111,7 @@ class Ventas extends Conectar
     INNER JOIN sujeto AS B ON B.id=A.sujeto 
     INNER JOIN usuario AS C ON C.id_cliente=A.usuario 
     INNER JOIN tipo_movimiento AS D ON D.id=A.tipo_operacion 
-    WHERE tipo_operacion = 4 ORDER BY fecha_r DESC";
+    WHERE tipo_operacion = 5 ORDER BY documento  DESC";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->execute();

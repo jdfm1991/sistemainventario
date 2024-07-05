@@ -398,7 +398,7 @@ function verTotalesGenerales() {
 }
 //************************************************/
 //**********Funcion para cargar la lista**********/
-//***************de los proveedores***************/
+//************de las Compras realizadas***********/
 function cargarListaComprasRealizadas() {
   $('#comprastable').DataTable().destroy();
   comprastable = $('#comprastable').DataTable({

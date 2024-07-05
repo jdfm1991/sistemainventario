@@ -20,7 +20,7 @@ $(document).ready(function () {
   });
   //************************************************/
   //*********Accion para el boton registrar*********/
-  //*******************Comprar**********************/
+  //*******************Venta************************/
   $('#rcompra').click(function (e) {
     e.preventDefault();
     $('#contenedor_compra').show();
@@ -28,21 +28,11 @@ $(document).ready(function () {
     $('#rcompra').addClass('active');
     $('#contenedor_default').hide();
     $('#contenedor_ver_compra').hide();
-    //************************************************/
-    //**********Accion para Cargar numero de**********/
-    //**************la siguiente factura**************/
-    $.ajax({
-      url: "assets/app/ventas/ventas_controller.php?op=siguientefactura",
-      method: "POST",
-      dataType: "json",
-      success: function (data) {
-        $('#documento').text(data);
-      }
-    });
+    cargarNumeroFactura()
   });
   //************************************************/
   //*************Accion para el boton Ver***********/
-  //*******************Comprar**********************/
+  //*******************Ventas***********************/
   $('#vcompra').click(function (e) {
     e.preventDefault();
     $('#contenedor_compra').hide();
@@ -50,7 +40,7 @@ $(document).ready(function () {
     $('#vcompra').addClass('active');
     $('#contenedor_default').hide();
     $('#contenedor_ver_compra').show();
-    cargarListaComprasRealizadas()
+    cargarListaVentasRealizadas()
   });
   //************************************************/
   //**********Accion para el boton Cancelar*********/
@@ -68,7 +58,7 @@ $(document).ready(function () {
   //************************************************/
   $('#btnsujeto').click(function (e) {
     e.preventDefault();
-    cargarListaProveedores()
+    cargarListaCliente()
     $('#proveedormodal').modal('show');
   });
   //************************************************/
@@ -107,31 +97,23 @@ $(document).ready(function () {
     if (!sujeto) {
       Swal.fire({
         icon: 'warning',
-        html: '<h2>¡Antes debe Escoger un Proveedor!</h2>',
+        html: '<h2>¡Antes debe Escoger un Cliente!</h2>',
         showConfirmButton: false,
         timer: 2000,
       })
     } else {
-      if (!documento) {
+      if (!impuesto) {
         Swal.fire({
           icon: 'warning',
-          html: '<h2>¡Antes debe colocar un numero de factura!</h2>',
+          html: '<h2>¡Antes de Carga Algun Producto Debe Escoger Una Alicuota!</h2>',
           showConfirmButton: false,
           timer: 2000,
         })
       } else {
-        if (!impuesto) {
-          Swal.fire({
-            icon: 'warning',
-            html: '<h2>¡Antes de Carga Algun Producto Debe Escoger Una Alicuota!</h2>',
-            showConfirmButton: false,
-            timer: 2000,
-          })
-        } else {
-          cargarListaProductos()
-          $('#productomodal').modal('show');
-        }
+        cargarListaProductos()
+        $('#productomodal').modal('show');
       }
+
     }
   });
   //************************************************/
@@ -145,12 +127,12 @@ $(document).ready(function () {
   //************************************************/
   //**********Accion para Registar compra***********/
   //*****************de los producro****************/
-  $('#comprasform').submit(function (e) {
+  $('#ventasform').submit(function (e) {
     e.preventDefault();
     array = []
     idsujeto = $('#idsujeto').val();
     usuario = $('#usuario').val();
-    documento = $('#documento').val();
+    documento = $('#documento').text();
     impuesto = $('#impuesto').val();
     excento = $('#excento').val();
     fecha = $('#fecha').val();
@@ -166,9 +148,9 @@ $(document).ready(function () {
       if (countact !== undefined) {
         subarray['idproducto'] = $("#idproducto" + (i)).val();
         subarray['producto'] = $("#producto" + (i)).val();
-        subarray['costact'] =$("#costact" + (i)).val();
+        subarray['costact'] = $("#costact" + (i)).val();
         subarray['countact'] = $("#countact" + (i)).val();
-        subarray['costacttotal'] =$("#costacttotal" + (i)).val();
+        subarray['costacttotal'] = $("#costacttotal" + (i)).val();
         array.push(subarray);
       }
     }
@@ -189,13 +171,13 @@ $(document).ready(function () {
     if (!Array.isArray(array) || array.length === 0) {
       Swal.fire({
         icon: 'warning',
-        html: '<h2>¡Debe Agregar al Menos Agregar Un Producto a la Compra!</h2>',
+        html: '<h2>¡Debe Agregar al Menos Agregar Un Producto a la Venta!</h2>',
         showConfirmButton: false,
         timer: 2000,
       })
     } else {
       $.ajax({
-        url: "assets/app/compras/compras_controller.php?op=registar",
+        url: "assets/app/ventas/ventas_controller.php?op=registar",
         type: "POST",
         dataType: "json",
         data: datos,
@@ -210,7 +192,7 @@ $(document).ready(function () {
               showConfirmButton: false,
               timer: 2000,
             });
-            $('#comprasform').get(0).reset();
+            $('#ventasform').get(0).reset();
             $('#rcomprastable tbody').empty();
             $('#nitems').text('');
             $('#pcant').text('');
@@ -218,6 +200,7 @@ $(document).ready(function () {
             $('#base').text('');
             $('#iva').text('');
             $('#total').text('');
+            cargarNumeroFactura()
           } else {
             Swal.fire({
               icon: 'error',
@@ -234,13 +217,13 @@ $(document).ready(function () {
 
 //************************************************/
 //**********Funcion para cargar la lista**********/
-//***************de los proveedores***************/
-function cargarListaProveedores() {
+//***************de los clientes***************/
+function cargarListaCliente() {
   $('#modaproveedortable').DataTable().destroy();
   modaproveedortable = $('#modaproveedortable').DataTable({
     pageLength: 10,
     ajax: {
-      url: "assets/app/proveedor/proveedor_controller.php?op=verproveedores",
+      url: "assets/app/cliente/cliente_controller.php?op=verclientes",
       method: 'POST', //usamos el metodo POST
       dataSrc: ""
     },
@@ -251,7 +234,7 @@ function cargarListaProveedores() {
         data: "id",
         "render": function (data, type, row) {
           return "<div class='text-center'><div class='btn-group'>" +
-            "<button onclick='cargarDataProveedor(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
+            "<button onclick='cargarDataCliente(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
             "</div></div>"
         }
       },
@@ -261,9 +244,9 @@ function cargarListaProveedores() {
 //************************************************/
 //*********Funcion para cargar informacion********/
 //*****************del proveedores****************/
-function cargarDataProveedor(id) {
+function cargarDataCliente(id) {
   $.ajax({
-    url: "assets/app/proveedor/proveedor_controller.php?op=verproveedor",
+    url: "assets/app/cliente/cliente_controller.php?op=vercliente",
     method: "POST",
     dataType: "json",
     data: { id: id },
@@ -297,7 +280,7 @@ function cargarListaProductos() {
         data: "id_producto",
         "render": function (data, type, row) {
           return "<div class='text-center'><div class='btn-group'>" +
-            "<button onclick='agragarItemCompra(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
+            "<button onclick='agragarItemVenta(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
             "</div></div>"
         }
       },
@@ -307,7 +290,7 @@ function cargarListaProductos() {
 //************************************************/
 //*********Funcion para agragar nuevo item********/
 //*************al registro de compra**************/
-function agragarItemCompra(id) {
+function agragarItemVenta(id) {
   $.ajax({
     url: "assets/app/producto/producto_controller.php?op=verproducto",
     method: "POST",
@@ -315,24 +298,25 @@ function agragarItemCompra(id) {
     data: { id: id },
     success: function (data) {
       $.each(data, function (idx, opt) {
-        if (opt.Costo_unidad > 0) {
+        if (opt.precio_unidad > 0) {
           numero = $itemcolumn.children().length + 1;
           $('#cuerpo').append(
             '<tr name=ncolumn>' +
             '<td>' +
+            '<input type="hidden" id="tipo' + numero + '" value="' + opt.excento + '">' +
             '<input type="text" class="form-control" id="idproducto' + numero + '" value="' + opt.id_producto + '" disabled>' +
             '</td>' +
             '<td>' +
             '<input type="text" class="form-control" id="producto' + numero + '" value="' + opt.Descripcion + '" disabled>' +
             '</td>' +
             '<td>' +
-            '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
+            '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.precio_unidad + '" disabled>' +
             '</td>' +
             '<td>' +
             '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="1" max=' + opt.Cantidad + '>' +
             '</td>' +
             '<td>' +
-            '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
+            '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.precio_unidad + '" disabled>' +
             '</td>' +
             '<td>' +
             '<button id="delcol" type="button" class="btn btn-danger">' +
@@ -341,11 +325,11 @@ function agragarItemCompra(id) {
             '</td>' +
             '</tr>');
           $('#productomodal').modal('hide');
-          verTotalesGenerales()
+          verTotalesGenerales();
         } else {
           Swal.fire({
             icon: 'warning',
-            html: '<h2>¡No Se Puede Cargar Productos Con Costo 0!</h2>',
+            html: '<h2>¡No Se Puede Cargar Productos Con Precio 0!</h2>',
             showConfirmButton: false,
             timer: 2000,
           })
@@ -360,6 +344,7 @@ function agragarItemCompra(id) {
 function calcularSubTotales(nitem) {
   countact = $('#countact' + nitem).val();
   costact = $('#costact' + nitem).val();
+  tipo = $('#tipo' + nitem).val();
   nuevomonto = costact * countact
   $(`#costacttotal${nitem}`).val(nuevomonto.toFixed(2));
   verTotalesGenerales()
@@ -374,14 +359,15 @@ function verTotalesGenerales() {
   let iva = 0;
   let total = 0;
   let items = 0;
+  let excento = 0;
   array = []
   impuesto = Number($('#impuesto').val());
-  excento = Number($('#excento').val());
   items = $itemcolumn.children().length;
   for (i = 1; i <= numero; i++) {
     subarray = []
     countact = $("#countact" + (i)).val()
     if (countact !== undefined) {
+      subarray['tipo'] = Number($("#tipo" + (i)).val());
       subarray['countact'] = Number($("#countact" + (i)).val());
       subarray['costacttotal'] = Number($("#costacttotal" + (i)).val());
       array.push(subarray);
@@ -390,6 +376,10 @@ function verTotalesGenerales() {
   array.forEach(data => {
     cant += data.countact;
     subtotal += data.costacttotal;
+    if (data.tipo) {
+      excento += data.costacttotal;
+      $('#excento').val(excento.toFixed(2))
+    }
   });
   if (excento) {
     base = subtotal - excento;
@@ -409,19 +399,19 @@ function verTotalesGenerales() {
 }
 //************************************************/
 //**********Funcion para cargar la lista**********/
-//***************de los proveedores***************/
-function cargarListaComprasRealizadas() {
+//***************de Ventas Realizadas*************/
+function cargarListaVentasRealizadas() {
   $('#comprastable').DataTable().destroy();
   comprastable = $('#comprastable').DataTable({
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "assets/app/compras/compras_controller.php?op=vercompras",
+      url: "assets/app/ventas/ventas_controller.php?op=verventas",
       method: 'POST',
       dataSrc: ""
     },
     columns: [
-      { data: "Proveedor" },
+      { data: "cliente" },
       { data: "fecha_o" },
       { data: "documento" },
       { data: "cant_items" },
@@ -430,10 +420,23 @@ function cargarListaComprasRealizadas() {
       { data: "usuario" },
     ],
     order: {
-      name:'fecha_o',
-      dir:'desc'
+      name: 'documento',
+      dir: 'desc'
     }
   })
+}
+//************************************************/
+//**********Funcion para Cargar numero de*********/
+//**************la siguiente factura**************/
+function cargarNumeroFactura() {
+  $.ajax({
+    url: "assets/app/ventas/ventas_controller.php?op=siguientefactura",
+    method: "POST",
+    dataType: "json",
+    success: function (data) {
+      $('#documento').text(data);
+    }
+  });
 }
 
 

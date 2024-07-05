@@ -51,6 +51,7 @@ switch ($_GET["op"]) {
       $sub_array['Unidad'] = $data['Unidad'];
       $sub_array['Cantidad'] = number_format(30, 2);
       $sub_array['Costo_unidad'] = number_format($data['Costo_unidad'], 2);
+      $sub_array['precio_unidad'] = number_format($data['precio_unidad'], 2);
       $sub_array['valor_inventario'] = number_format($data['precio_unidad'], 2);
       $sub_array['excento'] = $data['excento'];
       $dato[] = $sub_array;

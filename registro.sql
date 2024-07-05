@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `registro`
+-- Base de datos: `registro2`
 --
 
 -- --------------------------------------------------------
@@ -190,7 +190,7 @@ CREATE TABLE `operacion_inventario` (
   `impuesto` int NOT NULL DEFAULT '0',
   `iva` decimal(28,4) NOT NULL DEFAULT '0.0000',
   `total` decimal(28,4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Volcado de datos para la tabla `operacion_inventario`
@@ -278,7 +278,7 @@ CREATE TABLE `producto_precio_costo` (
   `precio_1` decimal(28,4) NOT NULL,
   `precio_2` decimal(28,4) NOT NULL,
   `precio_3` decimal(28,4) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
 

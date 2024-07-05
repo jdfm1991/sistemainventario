@@ -15,7 +15,7 @@ $fecha2 = date("Y-m-d H:m:s");
 $items = (isset($_POST['items'])) ? $_POST['items'] : '';
 $cant = (isset($_POST['cant'])) ? $_POST['cant'] : '';
 $subtotal = (isset($_POST['subtotal'])) ? $_POST['subtotal'] : '';
-$excent = (isset($_POST['excento'])) ? $_POST['excento'] : '';
+$excento = (isset($_POST['excento'])) ? $_POST['excento'] : 0;
 $base = (isset($_POST['base'])) ? $_POST['base'] : '';
 $impuesto = (isset($_POST['impuesto'])) ? $_POST['impuesto'] : '';
 $iva = (isset($_POST['iva'])) ? $_POST['iva'] : '';
@@ -31,21 +31,20 @@ switch ($_GET["op"]) {
 
   case 'registar':
     $dato = array();
-    $excento = ($excent) ? $excent : 0;
-    $Tipo_movimiento = 4;
-    $compra = $compras->registrarCompra($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento,    $base, $impuesto, $iva, $total, $Tipo_movimiento);
+    $Tipo_movimiento = 5;
+    $compra = $ventas->registrarVenta($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento,    $base, $impuesto, $iva, $total, $Tipo_movimiento);
     if ($compra) {
       $arr_prod = json_decode($producto, true);
       foreach ($arr_prod as $row) {
         $producto = $row['idproducto'];
         $costo = $row['costact'];
         $cant = $row['countact'];
-        $existencia = $compras->tomarExistencia($producto);
-        $cantidad = $cant + $existencia;
+        $existencia = $ventas->tomarExistencia($producto);
+        $cantidad = $existencia - $cant;
         $costoinventario = $cantidad * $costo;
-        $guardarproducto = $compras->guardarDatosProducto($producto, $cantidad, $costoinventario);
+        $guardarproducto = $ventas->guardarDatosProducto($producto, $cantidad, $costoinventario);
         if ($guardarproducto) {
-          $itmscompra = $compras->guardarDetalleCompra($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad);
+          $itmscompra = $ventas->guardarDetalleVenta($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad);
           if ($itmscompra) {
             $dato['status']  = true;
             $dato['message'] = 'Se Registro Informacion de Manera Exitosa';
@@ -65,13 +64,13 @@ switch ($_GET["op"]) {
     echo json_encode($dato, JSON_UNESCAPED_UNICODE);
     break;
 
-  case 'vercompras':
+  case 'verventas':
     $dato = array();
-    $data = $compras->verDatosCompras();
+    $data = $ventas->verDatosventas();
     foreach ($data as $data) {
       $sub_array = array();
       $sub_array['id'] = $data['id'];
-      $sub_array['Proveedor'] = $data['nombre'];
+      $sub_array['cliente'] = $data['nombre'];
       $sub_array['usuario'] = $data['nom_usuario'].' '.$data['ape_usuario'];
       $sub_array['Movimiento'] = $data['Movimiento'];
       $sub_array['documento'] = $data['documento'];
