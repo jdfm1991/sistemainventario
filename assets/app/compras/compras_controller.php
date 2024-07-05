@@ -40,7 +40,7 @@ switch ($_GET["op"]) {
         $costoinventario = $cantidad * $costo;
         $guardarproducto = $compras->guardarDatosProducto($producto, $cantidad, $costoinventario);
         if ($guardarproducto) {
-          $itmscompra = $compras->guardarDetalleCompra($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad);
+          $itmscompra = $compras->guardarDetalleCompra($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad,$documento);
           if ($itmscompra) {
             $dato['status']  = true;
             $dato['message'] = 'Se Registro Informacion de Manera Exitosa';

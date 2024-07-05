@@ -78,7 +78,7 @@ class Ventas extends Conectar
     return $sql->execute();
   }
 
-  public function guardarDetalleVenta($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad)
+  public function guardarDetalleVenta($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad,$documento)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -86,7 +86,7 @@ class Ventas extends Conectar
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "INSERT INTO movimiento_inventario(codigo_producto, codigo_tmovi, fecha_movimiento, id_usuario, cantidad, cant_ant, nueva_cant) VALUES (?,?,?,?,?,?,?)";
+    $sql = "INSERT INTO movimiento_inventario(codigo_producto, codigo_tmovi, fecha_movimiento, id_usuario, cantidad, cant_ant, nueva_cant, documento) VALUES (?,?,?,?,?,?,?,?)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->bindValue(1, $producto);
@@ -96,6 +96,7 @@ class Ventas extends Conectar
     $sql->bindValue(5, $cant);
     $sql->bindValue(6, $existencia);
     $sql->bindValue(7, $cantidad);
+    $sql->bindValue(8, $documento);
     return $sql->execute();
   }
 

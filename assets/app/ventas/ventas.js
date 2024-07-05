@@ -8,8 +8,8 @@ $(document).ready(function () {
   //************************************************/
   //*******Se Oculta los elementos iniciales********/
   //*****************de modulo**********************/
-  $('#contenedor_ver_compra').hide();
-  $('#contenedor_compra').hide();
+  $('#contenedor_ver_venta').hide();
+  $('#contenedor_venta').hide();
   //************************************************/
   //***********Funcion para Validar solo************/
   //**************Entrada de Numeros****************/
@@ -21,25 +21,25 @@ $(document).ready(function () {
   //************************************************/
   //*********Accion para el boton registrar*********/
   //*******************Venta************************/
-  $('#rcompra').click(function (e) {
+  $('#rventa').click(function (e) {
     e.preventDefault();
-    $('#contenedor_compra').show();
+    $('#contenedor_venta').show();
     $('button').removeClass('active');
-    $('#rcompra').addClass('active');
+    $('#rventa').addClass('active');
     $('#contenedor_default').hide();
-    $('#contenedor_ver_compra').hide();
+    $('#contenedor_ver_venta').hide();
     cargarNumeroFactura()
   });
   //************************************************/
   //*************Accion para el boton Ver***********/
   //*******************Ventas***********************/
-  $('#vcompra').click(function (e) {
+  $('#vventa').click(function (e) {
     e.preventDefault();
-    $('#contenedor_compra').hide();
+    $('#contenedor_venta').hide();
     $('button').removeClass('active');
-    $('#vcompra').addClass('active');
+    $('#vventa').addClass('active');
     $('#contenedor_default').hide();
-    $('#contenedor_ver_compra').show();
+    $('#contenedor_ver_venta').show();
     cargarListaVentasRealizadas()
   });
   //************************************************/
@@ -47,10 +47,10 @@ $(document).ready(function () {
   //************************************************/
   $('#clean').click(function (e) {
     e.preventDefault();
-    $('#comprasform').get(0).reset();
-    $('#rcomprastable tbody').empty();
-    $('#contenedor_ver_compra').hide();
-    $('#contenedor_compra').hide();
+    $('#ventasform').get(0).reset();
+    $('#rventastable tbody').empty();
+    $('#contenedor_ver_venta').hide();
+    $('#contenedor_venta').hide();
     $('#contenedor_default').show()
   });
   //************************************************/
@@ -187,7 +187,7 @@ $(document).ready(function () {
               timer: 2000,
             });
             $('#ventasform').get(0).reset();
-            $('#rcomprastable tbody').empty();
+            $('#rventastable tbody').empty();
             $('#nitems').text('');
             $('#pcant').text('');
             $('#subtotal').text('');
@@ -292,38 +292,47 @@ function agragarItemVenta(id) {
     data: { id: id },
     success: function (data) {
       $.each(data, function (idx, opt) {
-        if (opt.precio_unidad > 0) {
-          numero = $itemcolumn.children().length + 1;
-          $('#cuerpo').append(
-            '<tr name=ncolumn>' +
-            '<td>' +
-            '<input type="hidden" id="tipo' + numero + '" value="' + opt.excento + '">' +
-            '<input type="text" class="form-control" id="idproducto' + numero + '" value="' + opt.id_producto + '" disabled>' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" class="form-control" id="producto' + numero + '" value="' + opt.Descripcion + '" disabled>' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.precio_unidad + '" disabled>' +
-            '</td>' +
-            '<td>' +
-            '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="1" max=' + opt.Cantidad + '>' +
-            '</td>' +
-            '<td>' +
-            '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.precio_unidad + '" disabled>' +
-            '</td>' +
-            '<td>' +
-            '<button id="delcol" type="button" class="btn btn-danger">' +
-            '<i class="bi bi-x-circle"></i>' +
-            '</button>' +
-            '</td>' +
-            '</tr>');
-          $('#productomodal').modal('hide');
-          verTotalesGenerales();
+        if (opt.Cantidad > 0) {
+          if (opt.precio_unidad > 0) {
+            numero = $itemcolumn.children().length + 1;
+            $('#cuerpo').append(
+              '<tr name=ncolumn>' +
+              '<td>' +
+              '<input type="hidden" id="tipo' + numero + '" value="' + opt.excento + '">' +
+              '<input type="text" class="form-control" id="idproducto' + numero + '" value="' + opt.id_producto + '" disabled>' +
+              '</td>' +
+              '<td>' +
+              '<input type="text" class="form-control" id="producto' + numero + '" value="' + opt.Descripcion + '" disabled>' +
+              '</td>' +
+              '<td>' +
+              '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.precio_unidad + '" disabled>' +
+              '</td>' +
+              '<td>' +
+              '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="1" max=' + opt.Cantidad + '>' +
+              '</td>' +
+              '<td>' +
+              '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.precio_unidad + '" disabled>' +
+              '</td>' +
+              '<td>' +
+              '<button id="delcol" type="button" class="btn btn-danger">' +
+              '<i class="bi bi-x-circle"></i>' +
+              '</button>' +
+              '</td>' +
+              '</tr>');
+            $('#productomodal').modal('hide');
+            verTotalesGenerales();
+          } else {
+            Swal.fire({
+              icon: 'warning',
+              html: '<h2>¡No Se Puede Cargar Productos Con Precio 0!</h2>',
+              showConfirmButton: false,
+              timer: 2000,
+            })
+          }
         } else {
           Swal.fire({
             icon: 'warning',
-            html: '<h2>¡No Se Puede Cargar Productos Con Precio 0!</h2>',
+            html: '<h2>¡No Se Puede Cargar Productos Con Existencia 0!</h2>',
             showConfirmButton: false,
             timer: 2000,
           })
@@ -395,8 +404,8 @@ function verTotalesGenerales() {
 //**********Funcion para cargar la lista**********/
 //***************de Ventas Realizadas*************/
 function cargarListaVentasRealizadas() {
-  $('#comprastable').DataTable().destroy();
-  comprastable = $('#comprastable').DataTable({
+  $('#ventasstable').DataTable().destroy();
+  ventasstable = $('#ventasstable').DataTable({
     responsive: true,
     pageLength: 10,
     ajax: {

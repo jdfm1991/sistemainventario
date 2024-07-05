@@ -10,6 +10,7 @@ $(document).ready(function () {
   //*****************de modulo**********************/
   $('#contenedor_ver_inventario').hide();
   $('#contenedor_inventario').hide();
+  $('#contenedor_ver_inventario_d').hide();
   //************************************************/
   //***********Funcion para Validar solo************/
   //**************Entrada de Numeros****************/
@@ -29,17 +30,47 @@ $(document).ready(function () {
     $('#contenedor_default').hide();
     $('#contenedor_ver_inventario').hide();
   });
-   //************************************************/
-  //**************Accion para el boton Ver***********/
-  //**************movimientos de inventario**********/
+  //************************************************/
+  //**************Accion para el boton Ver**********/
+  //**************movimientos de inventario*********/
   $('#v_inventario').click(function (e) {
     e.preventDefault();
     $('#contenedor_inventario').hide();
     $('button').removeClass('active');
     $('#v_inventario').addClass('active');
     $('#contenedor_default').hide();
+    $('#contenedor_botones').hide();
+    $('#contenedor_ver_inventario').removeClass('col-sm-9');
+    $('#contenedor_ver_inventario').addClass('col-sm');
     $('#contenedor_ver_inventario').show();
-    cargarListaComprasRealizadas()
+    cargarListaMovimientosRealizadas()
+  });
+  //************************************************/
+  //******Accion para el boton ver movimientos******/
+  //**************detallados de inventario**********/
+  $('#v_inventario_d').click(function (e) {
+    e.preventDefault();
+    $('#contenedor_inventario').hide();
+    $('button').removeClass('active');
+    $('#v_inventario_d').addClass('active');
+    $('#contenedor_default').hide();
+    $('#contenedor_botones').hide();
+    $('#contenedor_ver_inventario_d').removeClass('col-sm-9');
+    $('#contenedor_ver_inventario_d').addClass('col-sm');
+    $('#contenedor_ver_inventario_d').show();
+    cargarListaMovimientosDetaladosRealizadas()
+  });
+  //************************************************/
+  //***********Accion para el boton volver**********/
+  //**********restablecer la vista del menu*********/
+  $('.back').click(function (e) {
+    e.preventDefault();
+    $('#contenedor_inventario').hide();
+    $('#contenedor_ver_inventario').hide();
+    $('#contenedor_ver_inventario_d').hide();
+    $('button').removeClass('active');
+    $('#contenedor_default').show();
+    $('#contenedor_botones').show();
   });
   //************************************************/
   //**********Accion para el cargar selector********/
@@ -58,76 +89,22 @@ $(document).ready(function () {
       $('#productomodal').modal('show');
   });
   //************************************************/
-  //********Accion para cargar la informacion*******/
-  //******el Datatable de los tipos de cuentas******/
-  inventariotable = $('#inventariotable').DataTable({
-    responsive: true,
-    pageLength: 10,
-    ajax: {
-      url: "assets/app/inventario/inventario_controller.php?op=vermovimiento",
-      method: 'POST',
-      dataSrc: ""
-    },
-    columns: [
-      { data: "Descripcion" },
-      { data: "Movimiento" },
-      { data: "fecha_movimiento" },
-      { data: "comentario" },
-      { data: "usuario" },
-      { data: "cantidad_anterior" },
-      { data: "cantidad" },
-      { data: "cantidad_actual" },
-
-    ],
-  })
+  //**********Accion para el boton Cancelar*********/
   //************************************************/
-  //********Accion mostrar el formulario para*******/
-  //******crear o editar informacion de producto****/
-  $('#btnproducto').click(function (e) {
+  $('#clean').click(function (e) {
     e.preventDefault();
-    limpiarFormulario()
-    inventariotable.columns([2, 3, 5, 6]).visible(false)
-    $('#contenedor_fomulario').addClass('col-4');
-    $('#contenedor_tabla').addClass('col-8');
-    $('#btnproducto').hide();
-    $('#contenedor_fomulario').show();
+    $('#minventarioform').get(0).reset();
+    $('#rminventariotable tbody').empty();
+    $('#contenedor_inventario').hide();
+    $('#contenedor_default').show()
   });
   //************************************************/
-  //********Accion para cargar la informacion*******/
-  //******en lista de opciones de descripcion ******/
-  $('#producto').keyup(function (e) {
-    producto = $('#producto').val();
-    $.ajax({
-      url: "assets/app/inventario/inventario_controller.php?op=verlistproducto",
-      method: "POST",
-      dataType: "json",
-      data: { producto: producto },
-      success: function (data) {
-        $('#listadeproducto').empty();
-        $.each(data, function (idx, opt) {
-          $('#listadeproducto').append('<option>' + opt.Descripcion + '</option>');
-        });
-      }
-    });
-  });
-  //************************************************/
-  //************Accion para establecer la***********/
-  //**********informacion del producto que**********/
-  $('#producto').change(function (e) {
-    e.preventDefault();
-    producto = $('#producto').val();
-    $.ajax({
-      url: "assets/app/inventario/inventario_controller.php?op=verproducto",
-      method: "POST",
-      dataType: "json",
-      data: { producto: producto },
-      success: function (data) {
-        $.each(data, function (idx, opt) {
-          $('#idproducto').val(opt.id_producto);
-          $('#producto').val(opt.Descripcion);
-        });
-      }
-    });
+  //**********Accion para el boton Eliminar*********/
+  //*****************un producro********************/
+  $(document).on("click", "#delcol", function () {
+    column = $(this).closest('tr')
+    column.remove();
+    verTotalesGenerales()
   });
   //************************************************/
   //********Accion para cargar la informacion*******/
@@ -144,46 +121,80 @@ $(document).ready(function () {
     }
   });
   //************************************************/
-  //********Accion para Enviar y guardar la*********/
-  //*********informacion del movimiento de inventario************/
-  $('#formularioinventario').submit(function (e) {
+  //********Accion para Registar informacion********/
+  //*************movimiento de inventar*************/
+  $('#minventarioform').submit(function (e) {
     e.preventDefault();
-    id_producto = $('#idproducto').val();
-    cantidad = $('#cantidad').val();
-    movimiento = $('#movimiento').val();
+    array = []
     usuario = $('#usuario').val();
-    comentario = $('#comentario').val();
-    $.ajax({
-      url: "assets/app//inventario/inventario_controller.php?op=VerCambiosCantidad",
-      type: "POST",
-      dataType: "json",
-      data: { id_producto: id_producto, cantidad: cantidad, movimiento: movimiento, usuario: usuario, comentario: comentario },
-      success: function (data) {
-        if (data.status == true) {
-          Swal.fire({
-            icon: 'success',
-            html: '<h2>¡' + data.message + '!</h2>',
-            showConfirmButton: false,
-            timer: 2000,
-          })
-          setTimeout(() => {
-            limpiarFormulario()
-          }, 1000);
-          setTimeout(() => {
-
-            inventariotable.ajax.reload(null, false);
-          }, 1500);
-        } else {
-          $('#messege').addClass('alert-danger');
-          $('#messege').show();
-          $('#error').text(data.message);
-          setTimeout(() => {
-            $("#error").text("");
-            $("#messege").hide();
-          }, 3000);
-        }
+    movimiento = $('#movimiento').val();
+    documento = $('#documento').text();
+    fecha = $('#fecha').val();
+    items = $('#nitems').text();
+    cant = $('#pcant').text();
+    total = $('#total').text();
+    for (i = 1; i <= numero; i++) {
+      subarray = {}
+      countact = $("#countact" + (i)).val()
+      if (countact !== undefined) {
+        subarray['idproducto'] = $("#idproducto" + (i)).val();
+        subarray['producto'] = $("#producto" + (i)).val();
+        subarray['costact'] = $("#costact" + (i)).val();
+        subarray['countact'] = $("#countact" + (i)).val();
+        subarray['costacttotal'] = $("#costacttotal" + (i)).val();
+        array.push(subarray);
       }
-    });
+    }
+    var datos = new FormData();
+    datos.append('usuario', usuario)
+    datos.append('movimiento', movimiento)
+    datos.append('documento', documento)
+    datos.append('fecha', fecha)
+    datos.append('items', items)
+    datos.append('cant', cant)
+    datos.append('total', total)
+    datos.append('producto', JSON.stringify(array))
+    if (!Array.isArray(array) || array.length === 0) {
+      Swal.fire({
+        icon: 'warning',
+        html: '<h2>¡Debe Agregar al Menos Agregar Un Producto!</h2>',
+        showConfirmButton: false,
+        timer: 2000,
+      })
+    } else {
+      $.ajax({
+        url: "assets/app/inventario/inventario_controller.php?op=registar",
+        type: "POST",
+        dataType: "json",
+        data: datos,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function (data) {
+          console.log(data);
+          if (data.status == true) {
+            Swal.fire({
+              icon: 'success',
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+            $('#minventarioform').get(0).reset();
+            $('#rminventariotable tbody').empty();
+            $('#nitems').text('');
+            $('#pcant').text('');
+            $('#total').text('');
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: data.message,
+              showConfirmButton: false,
+              timer: 2000,
+            });
+          }
+        }
+      });
+    }
   });
   //************************************************/
   //********Accion cancelar el formulario de*******/
@@ -197,15 +208,6 @@ $(document).ready(function () {
     $('#contenedor_fomulario').hide();
   });
 });
-function limpiarFormulario() {
-  $('#idproducto').val('');
-  $('#producto').val('');
-  $('#id_producto').val('');
-  $('#cantidad').val('');
-  $('#movimiento').val('');
-  $('#comentario').val('');
-}
-
 //************************************************/
 //**********Funcion para Cargar numero de*********/
 //**************la siguiente factura**************/
@@ -259,7 +261,7 @@ function agragarItemMovimiento(id) {
       $.each(data, function (idx, opt) {
         if (opt.precio_unidad > 0) {
           numero = $itemcolumn.children().length + 1;
-          $('#cuerpo').append(
+          $('#cuerpoinventario').append(
             '<tr name=ncolumn>' +
             '<td>' +
             '<input type="hidden" id="tipo' + numero + '" value="' + opt.excento + '">' +
@@ -272,7 +274,7 @@ function agragarItemMovimiento(id) {
             '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
             '</td>' +
             '<td>' +
-            '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="1" max=' + opt.Cantidad + '>' +
+            '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="0" max=' + opt.Cantidad + '>' +
             '</td>' +
             '<td>' +
             '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
@@ -316,8 +318,6 @@ function verTotalesGenerales() {
   let total = 0;
   let items = 0;
   array = []
-  items = $itemcolumn.children().length;
-  console.log(items);
   for (i = 1; i <= numero; i++) {
     subarray = []
     countact = $("#countact" + (i)).val()
@@ -331,8 +331,68 @@ function verTotalesGenerales() {
     cant += data.countact;
     total += data.costacttotal;
   });
-
+  items = array.length
   $('#nitems').text(items);
   $('#pcant').text(cant);
   $('#total').text(total.toFixed(2));
+}
+//********Accion para cargar la informacion*******/
+//*********el Datatable de los Movimiento*********/
+//******************del inventario****************/
+function cargarListaMovimientosRealizadas() {
+  $('#inventariotable').DataTable().destroy();
+  inventariotable = $('#inventariotable').DataTable({
+    responsive: true,
+    pageLength: 10,
+    ajax: {
+      url: "assets/app/inventario/inventario_controller.php?op=vermovimiento",
+      method: 'POST',
+      dataSrc: ""
+    },
+    columns: [
+      { data: "id" },
+      { data: "responsable" },
+      { data: "Movimiento" },
+      { data: "fecha_o" },
+      { data: "documento" },
+      { data: "cant_items" },
+      { data: "cant_producto" },
+      { data: "total" },
+      { data: "usuario" },
+    ],
+    order: {
+      name: 'id',
+      dir: 'desc'
+    }
+  })
+}
+//********Accion para cargar la informacion*******/
+//*********el Datatable de los Movimiento*********/
+//**************del inventario detallado**********/
+function cargarListaMovimientosDetaladosRealizadas() {
+  $('#inventariodtable').DataTable().destroy();
+  inventariodtable = $('#inventariodtable').DataTable({
+    responsive: true,
+    pageLength: 10,
+    ajax: {
+      url: "assets/app/inventario/inventario_controller.php?op=vermovimientodatallado",
+      method: 'POST',
+      dataSrc: ""
+    },
+    columns: [
+      { data: "id" },
+      { data: "Descripcion" },
+      { data: "Movimiento" },
+      { data: "documento" },
+      { data: "fecha_movimiento" },
+      { data: "cantidad_anterior" },
+      { data: "cantidad" },
+      { data: "cantidad_actual" },
+      { data: "usuario" },
+    ],
+    order: {
+      name: 'id',
+      dir: 'desc'
+    }
+  })
 }

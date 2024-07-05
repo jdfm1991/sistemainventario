@@ -32,7 +32,7 @@ switch ($_GET["op"]) {
   case 'registar':
     $dato = array();
     $Tipo_movimiento = 5;
-    $compra = $ventas->registrarVenta($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento,    $base, $impuesto, $iva, $total, $Tipo_movimiento);
+    $compra = $ventas->registrarVenta($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento);
     if ($compra) {
       $arr_prod = json_decode($producto, true);
       foreach ($arr_prod as $row) {
@@ -44,7 +44,7 @@ switch ($_GET["op"]) {
         $costoinventario = $cantidad * $costo;
         $guardarproducto = $ventas->guardarDatosProducto($producto, $cantidad, $costoinventario);
         if ($guardarproducto) {
-          $itmscompra = $ventas->guardarDetalleVenta($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad);
+          $itmscompra = $ventas->guardarDetalleVenta($producto, $Tipo_movimiento, $fecha2, $usuario, $cant, $existencia, $cantidad,$documento);
           if ($itmscompra) {
             $dato['status']  = true;
             $dato['message'] = 'Se Registro Informacion de Manera Exitosa';

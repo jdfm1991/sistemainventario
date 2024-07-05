@@ -18,10 +18,10 @@ $today = date('Y-m-d');
         <div class="card-body">
           <!-- Hover added -->
           <div class="list-group">
-            <button type="button" id="rcompra" class="list-group-item list-group-item-action">
+            <button type="button" id="rventa" class="list-group-item list-group-item-action">
               Registrar Ventas
             </button>
-            <button type="button" id="vcompra" class="list-group-item list-group-item-action">
+            <button type="button" id="vventa" class="list-group-item list-group-item-action">
               Ver Ventas
             </button>
           </div>
@@ -29,7 +29,7 @@ $today = date('Y-m-d');
         <div class="card-footer text-muted"></div>
       </div>
     </div>
-    <div id="contenedor_ver_compra" class="col-sm-9">
+    <div id="contenedor_ver_venta" class="col-sm-9">
       <div class="card">
         <div class="card-header">
           <div class="row">
@@ -39,11 +39,11 @@ $today = date('Y-m-d');
           </div>
         </div>
         <div class="card-body">
-          <table id="comprastable" class="table table-striped" style="width:100%">
+          <table id="ventasstable" class="table table-striped" style="width:100%">
             <thead>
               <tr>
                 <th scope="col">Nombre de Cliente</th>
-                <th scope="col">Fecha de Compra</th>
+                <th scope="col">Fecha de venta</th>
                 <th scope="col">Nuemmero de Dcumento</th>
                 <th scope="col">Items de Factura</th>
                 <th scope="col">Productos Facturados</th>
@@ -59,7 +59,7 @@ $today = date('Y-m-d');
         <div class="card-footer text-muted"></div>
       </div>
     </div>
-    <div id="contenedor_compra" class="col-sm-9">
+    <div id="contenedor_venta" class="col-sm-9">
       <div class="card">
         <div class="card-header">
           <div class="row">
@@ -90,7 +90,7 @@ $today = date('Y-m-d');
                       </div>
                       <div class="col-3">
                         <div class="form-floating">
-                            <select id="impuesto" class="form-select form-select-sm" required>
+                            <select id="impuesto" class="form-select form-select-sm" required disabled>
                             <!--Carga Mediante Ajax-->
                             </select>
                             <label for="impuesto" class="form-label">Alicuota</label>
@@ -157,7 +157,7 @@ $today = date('Y-m-d');
                   </button>
                 </div>
                 <div class="table-wrapper">
-                  <table id="rcomprastable" style="width:100%">
+                  <table id="rventastable" style="width:100%">
                     <thead>
                       <tr>
                         <th>#ID</th>

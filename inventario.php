@@ -8,7 +8,7 @@ if (!$_SESSION) {
 }
 $today = date('Y-m-d');
 ?>
-<div class="container-md mt-5">
+<div class="container-fluid mt-5 px-5">
   <div class="row justify-content-center g-2">
     <div id="contenedor_botones" class="col-sm-3">
       <div class="card">
@@ -24,6 +24,9 @@ $today = date('Y-m-d');
             <button type="button" id="v_inventario" class="list-group-item list-group-item-action">
               Ver Movimientos
             </button>
+            <button type="button" id="v_inventario_d" class="list-group-item list-group-item-action">
+              Ver Movimientos Detallados
+            </button>
           </div>
 
         </div>
@@ -35,7 +38,12 @@ $today = date('Y-m-d');
         <div class="card-header">
           <div class="row">
             <div class="col-sm-8 text-center">
-              <h2> Lista de compras </h2>
+              <h2> Movimientos de Inventario Realizados </h2>
+            </div>
+            <div class="col-sm-4">
+              <button type="button" class="btn btn-outline-danger btn-light back">
+                <i class="bi bi-backspace"></i><span class="">Volver</span>
+              </button>
             </div>
           </div>
         </div>
@@ -43,15 +51,52 @@ $today = date('Y-m-d');
           <table id="inventariotable" class="table table-striped" style="width:100%">
             <thead>
               <tr>
-                <th scope="col">Nombre de Producto</th>
-                <th scope="col">Tipo de Movimiento</th>
+                <th scope="col">#ID</th>
+                <th scope="col">Responsable</th>
+                <th scope="col">Tipo de Operacion</th>
                 <th scope="col">Fecha movimiento</th>
-                <th scope="col">Comentario</th>
-                <th scope="col">Usuario</th>
+                <th scope="col">N# Documento</th>
+                <th scope="col">N# Items</th>
+                <th scope="col">N# Productos</th>
+                <th scope="col">Total Procesado</th>
+                <th scope="col">Nombre de Usuario</th>
+              </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+          </table>
+        </div>
+        <div class="card-footer text-muted"></div>
+      </div>
+    </div>
+    <div id="contenedor_ver_inventario_d" class="col-sm-9">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-sm-8 text-center">
+              <h2> Movimientos de Inventario Realizados </h2>
+            </div>
+            <div class="col-sm-4">
+              <button type="button" class="btn btn-outline-danger btn-light back">
+                <i class="bi bi-backspace"></i><span class="">Volver</span>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <table id="inventariodtable" class="table table-striped" style="width:100%">
+            <thead>
+              <tr>
+                <th scope="col">#ID</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Movimiento</th>
+                <th scope="col">N# Documento</th>
+                <th scope="col">Fecha movimiento</th>
                 <th scope="col">Cantidad anterior</th>
                 <th scope="col">Cantidad</th>
                 <th scope="col">Nueva Cantidad</th>
-                <th scope="col"></th>
+                <th scope="col">Usuario</th>
               </tr>
             </thead>
             <tbody>
@@ -72,7 +117,7 @@ $today = date('Y-m-d');
           </div>
         </div>
         <div class="card-body">
-          <form id="comprasform">
+          <form id="minventarioform">
             <div class="card-header">
               <div class="row">
                 <!--side-right Form header-->
@@ -115,7 +160,6 @@ $today = date('Y-m-d');
                     <div class="col-4">
                       <b><span id="total" class="fs-6 form-text"></span></b>
                     </div>
-
                   </div>
                 </div>
               </div>
@@ -127,7 +171,7 @@ $today = date('Y-m-d');
                 </button>
               </div>
               <div class="table-wrapper">
-                <table id="rcomprastable" style="width:100%">
+                <table id="rminventariotable" style="width:100%">
                   <thead>
                     <tr>
                       <th>#ID</th>
@@ -138,7 +182,7 @@ $today = date('Y-m-d');
                       <th></th>
                     </tr>
                   </thead>
-                  <tbody id="cuerpo">
+                  <tbody id="cuerpoinventario">
 
                   </tbody>
                 </table>
