@@ -104,7 +104,6 @@ $today = date('Y-m-d');
                       </div>
                       <div class="col-sm-5">
                         <b><span id="documento" class="fs-6 form-text"></span></b>
-                        <!--<input type="text" id="documento" class="form-control" placeholder="N# Factura" required>-->
                       </div>
                       <div class="col-4">
                         <div class="form-floating">

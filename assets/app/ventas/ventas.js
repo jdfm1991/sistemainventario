@@ -81,12 +81,6 @@ $(document).ready(function () {
     }
   });
   //************************************************/
-  //**********Accion para calculos los montos*******/
-  //*************teniendo un monto excento**********/
-  $('#excento').keyup(function (e) {
-    verTotalesGenerales()
-  });
-  //************************************************/
   //**********Accion para el boton Agragar**********/
   //****************un nuevo producro***************/
   $('#agregarproducto').click(function (e) {

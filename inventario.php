@@ -6,65 +6,36 @@ if (!$_SESSION) {
 } else {
   echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
 }
+$today = date('Y-m-d');
 ?>
 <div class="container-md mt-5">
   <div class="row justify-content-center g-2">
-    <div id="contenedor_fomulario" class="">
+    <div id="contenedor_botones" class="col-sm-3">
       <div class="card">
         <div class="card-header">
-          <h3> </h3>
+          <b><span class="text-center">Opciones de Movimiento de Inventario</span></b>
         </div>
         <div class="card-body">
-          <form id="formularioinventario">
-            <input type="text" id="idproducto" class="form-control" disabled>
-            <div class="mb-3">
-              <label for="descipcion"> Descripcion </label>
-              <input type="text" list="listadeproducto" class="form-control" id="producto" required>
-              <datalist id="listadeproducto">
-                <!--Carga Mediante Ajax-->
-              </datalist>
-            </div>
-            <div class="row mb-3">
-              <div class="col mt-2">
-                <div class="form-floating">
-                  <select id="movimiento" class="form-control" required>
-                    <!--Carga Mediante Ajax-->
-                  </select>
-                  <label for="movimiento" class="form-label">Movimiento</label>
-                </div>
-              </div>
-              <div class="col">
-                <label for="cantidad" class="form-label">Cantidad</label>
-                <input type="text" class="form-control" id="cantidad" name="cantidad" required>
-              </div>
-            </div>
-            <div class="row mb-3">
-              <div class="col">
-                <label for="comentario" class="form-label">Comentario</label>
-                <textarea type="text" class="form-control" id="comentario" name="comentario" required></textarea>
-              </div>
-            </div>
-            <div id="messege" class="text-center alert" role="alert">
-              <p id="error" class="mb-0"></p>
-            </div>
-            <button type="submit" class="btn btn-primary">Registrar</button>
-            <button id="cancelar" type="button" class="btn btn-danger">Cancelar</button>
-          </form>
+          <!-- Hover added -->
+          <div class="list-group">
+            <button type="button" id="r_inventario" class="list-group-item list-group-item-action">
+              Registrar Movimiento
+            </button>
+            <button type="button" id="v_inventario" class="list-group-item list-group-item-action">
+              Ver Movimientos
+            </button>
+          </div>
+
         </div>
         <div class="card-footer text-muted"></div>
       </div>
     </div>
-    <div id="contenedor_tabla" class="">
+    <div id="contenedor_ver_inventario" class="col-sm-9">
       <div class="card">
         <div class="card-header">
           <div class="row">
             <div class="col-sm-8 text-center">
-              <h2> Movimiento de inventario </h2>
-            </div>
-            <div class="col-sm-4">
-              <button id="btnproducto" type="button" class="btn btn-outline-primary btn-light">
-                <i class="bi bi-person-fill-add"></i><span class="">Crear Movimiento</span>
-              </button>
+              <h2> Lista de compras </h2>
             </div>
           </div>
         </div>
@@ -91,8 +62,107 @@ if (!$_SESSION) {
         <div class="card-footer text-muted"></div>
       </div>
     </div>
+    <div id="contenedor_inventario" class="col-sm-9">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-sm text-center">
+              <h2>Registro de Movimiento de Inventario</h2>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form id="comprasform">
+            <div class="card-header">
+              <div class="row">
+                <!--side-right Form header-->
+                <div class="col-sm-8">
+                  <div class="row justify-content-start align-items-center g-2">
+                    <div class="col-4">
+                      <div class="form-floating">
+                          <select id="movimiento" class="form-select form-select-sm" required>
+                          <!--Carga Mediante Ajax-->
+                          </select>
+                          <label for="movimiento" class="form-label">Tipo de Operacion</label>
+                      </div> 
+                    </div>
+                    <div class="col-sm-3">
+                      <label for="documento" class="col-form-label">N# Operacion</label>
+                    </div>
+                    <div class="col-sm-5">
+                      <b><span id="documento" class="fs-6 form-text"></span></b>
+                    </div>
+                    <div class="col-4">
+                      <label for="fecha" class="col-form-label">Fecha de Operacion</label>
+                    </div>
+                    <div class="col-4">
+                      <input type="date" id="fecha" class="form-control" value=<?php echo $today; ?> max=<?php echo $today; ?> required disabled>
+                    </div>
+                  </div>
+                </div>
+                <!--side-left Form header-->
+                <div class="col-sm-4">
+                  <div class="row justify-content-start align-items-center g-2">
+                    <label class="col-sm-8"><b>N° de Items</b></label>
+                    <div class="col-sm-4">
+                      <b><span id="nitems" class="fs-6 form-text"></span></b>
+                    </div>
+                    <label class="col-sm-8"><b>Total Producto</b></label>
+                    <div class="col-sm-4">
+                      <b><span id="pcant" class="fs-6 form-text"></span></b>
+                    </div>
+                    <label class="col-8"><b>Total</b></label>
+                    <div class="col-4">
+                      <b><span id="total" class="fs-6 form-text"></span></b>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button id="agregarproducto" class="btn btn-light me-md-2" type="button">
+                  <i class="bi bi-node-plus"></i>
+                </button>
+              </div>
+              <div class="table-wrapper">
+                <table id="rcomprastable" style="width:100%">
+                  <thead>
+                    <tr>
+                      <th>#ID</th>
+                      <th>Producto</th>
+                      <th>Costo</th>
+                      <th>Cant.</th>
+                      <th>Total Costo</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody id="cuerpo">
+
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="card-footer text-muted">
+              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                <button id="clean" class="btn btn-outline-danger" type="button"><i class="bi bi-x-octagon"></i>Cancelar</button>
+                <button class="btn btn-outline-primary" type="submit"><i class="bi bi-hdd"></i>Registrar</button>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="card-footer text-muted"></div>
+      </div>
+    </div>
+    <div id="contenedor_default" class="col-sm-9">
+      <div class="card">
+
+      </div>
+    </div>
   </div>
 </div>
+
 <script src="assets/app/inventario/inventario.js"></script>
 <?php
 require_once('foot.php')

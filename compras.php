@@ -186,16 +186,6 @@ $today = date('Y-m-d');
               </div>
             </form>
           </div>
-
-
-
-
-
-
-
-
-
-
         </div>
         <div class="card-footer text-muted"></div>
       </div>

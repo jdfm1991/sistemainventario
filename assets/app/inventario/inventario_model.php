@@ -3,6 +3,22 @@ require_once("../../../config/conexion.php");
 
 class Inventario extends Conectar
 {
+  public function verSiguienteMovimiento($prefijo,$movimiento)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT CONCAT('$prefijo-',LPAD(COUNT(*) + 1, 4, '0'), '/', YEAR(NOW())) AS n_fact
+            FROM operacion_inventario
+            WHERE year(fecha_o) = YEAR(NOW()) AND tipo_operacion=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $movimiento);
+    $sql->execute();
+    return ($sql->fetch(PDO::FETCH_ASSOC)['n_fact']);
+  }
 
   public function verMovimiento()
   {
@@ -70,7 +86,7 @@ class Inventario extends Conectar
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "SELECT * FROM tipo_movimiento";
+    $sql = "SELECT * FROM tipo_movimiento WHERE id IN (1,2,3)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->execute();

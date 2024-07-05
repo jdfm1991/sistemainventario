@@ -1,6 +1,15 @@
+//************************************************/
+//*********Se Crean Variables Globales************/
+//***************y se inicializan*****************/
+let cont = 0;
+let numero = 0;
+const $itemcolumn = $('tbody');
 $(document).ready(function () {
-  $('#contenedor_fomulario').hide();
-  $('#messege').hide();
+  //************************************************/
+  //*******Se Oculta los elementos iniciales********/
+  //*****************de modulo**********************/
+  $('#contenedor_ver_inventario').hide();
+  $('#contenedor_inventario').hide();
   //************************************************/
   //***********Funcion para Validar solo************/
   //**************Entrada de Numeros****************/
@@ -8,6 +17,45 @@ $(document).ready(function () {
     $("input[name='cantidad']").on('input', function (e) {
       $(this).val($(this).val().replace(/[^0-9.]/g, ''));
     });
+  });
+  //************************************************/
+  //*********Accion para el boton registrar*********/
+  //************movimientos de inventario***********/
+  $('#r_inventario').click(function (e) {
+    e.preventDefault();
+    $('#contenedor_inventario').show();
+    $('button').removeClass('active');
+    $('#r_inventario').addClass('active');
+    $('#contenedor_default').hide();
+    $('#contenedor_ver_inventario').hide();
+  });
+   //************************************************/
+  //**************Accion para el boton Ver***********/
+  //**************movimientos de inventario**********/
+  $('#v_inventario').click(function (e) {
+    e.preventDefault();
+    $('#contenedor_inventario').hide();
+    $('button').removeClass('active');
+    $('#v_inventario').addClass('active');
+    $('#contenedor_default').hide();
+    $('#contenedor_ver_inventario').show();
+    cargarListaComprasRealizadas()
+  });
+  //************************************************/
+  //**********Accion para el cargar selector********/
+  //*************del Tipo de Operacion**************/
+  $('#movimiento').change(function (e) { 
+    e.preventDefault();
+    movimiento = $('#movimiento').val();
+    cargarNumeroFactura(movimiento)
+  });
+   //************************************************/
+  //**********Accion para el boton Agragar**********/
+  //****************un nuevo producro***************/
+  $('#agregarproducto').click(function (e) {
+    e.preventDefault();
+      cargarListaProductos()
+      $('#productomodal').modal('show');
   });
   //************************************************/
   //********Accion para cargar la informacion*******/
@@ -156,4 +204,135 @@ function limpiarFormulario() {
   $('#cantidad').val('');
   $('#movimiento').val('');
   $('#comentario').val('');
+}
+
+//************************************************/
+//**********Funcion para Cargar numero de*********/
+//**************la siguiente factura**************/
+function cargarNumeroFactura(movimiento) {
+  $.ajax({
+    url: "assets/app/inventario/inventario_controller.php?op=siguientemovimiento",
+    method: "POST",
+    dataType: "json",
+    data: { movimiento: movimiento },
+    success: function (data) {
+      $('#documento').text(data);
+    }
+  });
+}
+//************************************************/
+//**********Funcion para cargar la lista**********/
+//*****************de los producro****************/
+function cargarListaProductos() {
+  $('#pmtable').DataTable().destroy();
+  pmtable = $('#pmtable').DataTable({
+    pageLength: 10,
+    ajax: {
+      url: "assets/app/producto/producto_controller.php?op=vertodoproducto",
+      method: 'POST', //usamos el metodo POST
+      dataSrc: ""
+    },
+    columns: [
+      { data: "Descripcion" },
+      { data: "Cantidad" },
+      {
+        data: "id_producto",
+        "render": function (data, type, row) {
+          return "<div class='text-center'><div class='btn-group'>" +
+            "<button onclick='agragarItemMovimiento(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
+            "</div></div>"
+        }
+      },
+    ],
+  });
+}
+//************************************************/
+//*********Funcion para agragar nuevo item********/
+//*************al registro de compra**************/
+function agragarItemMovimiento(id) {
+  $.ajax({
+    url: "assets/app/producto/producto_controller.php?op=verproducto",
+    method: "POST",
+    dataType: "json",
+    data: { id: id },
+    success: function (data) {
+      $.each(data, function (idx, opt) {
+        if (opt.precio_unidad > 0) {
+          numero = $itemcolumn.children().length + 1;
+          $('#cuerpo').append(
+            '<tr name=ncolumn>' +
+            '<td>' +
+            '<input type="hidden" id="tipo' + numero + '" value="' + opt.excento + '">' +
+            '<input type="text" class="form-control" id="idproducto' + numero + '" value="' + opt.id_producto + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="form-control" id="producto' + numero + '" value="' + opt.Descripcion + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="form-control"  id="costact' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<input type="number" class="form-control" onclick="calcularSubTotales(`' + numero + '`)" id="countact' + numero + '" value= "1" min="1" max=' + opt.Cantidad + '>' +
+            '</td>' +
+            '<td>' +
+            '<input type="text" class="form-control"  id="costacttotal' + numero + '" value="' + opt.Costo_unidad + '" disabled>' +
+            '</td>' +
+            '<td>' +
+            '<button id="delcol" type="button" class="btn btn-danger">' +
+            '<i class="bi bi-x-circle"></i>' +
+            '</button>' +
+            '</td>' +
+            '</tr>');
+          $('#productomodal').modal('hide');
+          verTotalesGenerales();
+        } else {
+          Swal.fire({
+            icon: 'warning',
+            html: '<h2>¡No Se Puede Cargar Productos Con Precio 0!</h2>',
+            showConfirmButton: false,
+            timer: 2000,
+          })
+        }
+      });
+    }
+  });
+}
+//************************************************/
+//********Funcion para calcular los totales*******/
+//****************de cada producto****************/
+function calcularSubTotales(nitem) {
+  countact = $('#countact' + nitem).val();
+  costact = $('#costact' + nitem).val();
+  tipo = $('#tipo' + nitem).val();
+  nuevomonto = costact * countact
+  $(`#costacttotal${nitem}`).val(nuevomonto.toFixed(2));
+  verTotalesGenerales()
+}
+//************************************************/
+//*********Funcion para cargar los totales********/
+//*****************de la factura******************/
+function verTotalesGenerales() {
+  let cant = 0;
+  let total = 0;
+  let items = 0;
+  array = []
+  items = $itemcolumn.children().length;
+  console.log(items);
+  for (i = 1; i <= numero; i++) {
+    subarray = []
+    countact = $("#countact" + (i)).val()
+    if (countact !== undefined) {
+      subarray['countact'] = Number($("#countact" + (i)).val());
+      subarray['costacttotal'] = Number($("#costacttotal" + (i)).val());
+      array.push(subarray);
+    }
+  }
+  array.forEach(data => {
+    cant += data.countact;
+    total += data.costacttotal;
+  });
+
+  $('#nitems').text(items);
+  $('#pcant').text(cant);
+  $('#total').text(total.toFixed(2));
 }

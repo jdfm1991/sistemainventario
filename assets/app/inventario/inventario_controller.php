@@ -15,6 +15,22 @@ $comentario = (isset($_POST['comentario'])) ? $_POST['comentario'] : '';
 $usuario = (isset($_POST['usuario'])) ? $_POST['usuario'] : '';
 
 switch ($_GET["op"]) {
+
+  case 'siguientemovimiento':
+    $prefijo = '';
+    if ($movimiento == 1) {
+      $prefijo = 'C';
+    }
+    if ($movimiento == 2) {
+      $prefijo = 'D';
+    }
+    if ($movimiento == 3) {
+      $prefijo = 'A';
+    }
+    $dato = $inventario->verSiguienteMovimiento($prefijo,$movimiento);
+    echo json_encode($dato, JSON_UNESCAPED_UNICODE);
+    break;
+
   case 'vermovimiento':
     $dato = array();
     $data = $inventario->verMovimiento();
