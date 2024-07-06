@@ -1,15 +1,17 @@
 <?php
-require_once('head.php');
 if (!$_SESSION) {
   header("Location: ./");
   die();
 } else {
   echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
 }
+require_once('head.php');
 $today = date('Y-m-d');
 ?>
 <div class="container-md mt-5">
-  <div class="row justify-content-center g-2">
+  <div class="row justify-content-center g-2 mt-5">
+    <h1>Modulo de Ventas</h1>
+    <hr>
     <div id="contenedor_botones" class="col-sm-3">
       <div class="card">
         <div class="card-header">

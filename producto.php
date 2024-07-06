@@ -1,12 +1,16 @@
 <?php
-require_once('head.php');
 if (!$_SESSION) {
   header("Location: ./");
   die();
+} else {
+  echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
 }
+require_once('head.php');
 ?>
 <div class="container mt-5">
-  <div class="row justify-content-center g-2">
+  <div class="row justify-content-center g-2 mt-5">
+    <h1>Modulo de Producto</h1>
+    <hr>
     <div id="contenedor_fomulario">
       <div class="card">
         <div class="card-header">

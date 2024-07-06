@@ -5,13 +5,21 @@ require_once('config/modals.php')
 <script src="assets/js/bootstrap/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 
 
-<footer class="bg-success bg-gradient py-2 mt-3">
-  <div class="container text-ligth text-center">
-    <p class="display-5 mb-3">Catherine Aponte- 2024</p>
-    <small class="text-white-50">&copy; Todos los derechos reservados.</small>
-  </div>
+<div class="container mt-5">
+  <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 border-top fixed-bottom bg-black bg-gradient rounded px-5">
+    <div class="col-md-4 d-flex align-items-center">
+      <a href="/" class="mb-3 me-2 mb-md-0 text-body-secondary text-decoration-none lh-1">
+        <svg class="bi" width="30" height="24"><use xlink:href="#bootstrap"></use></svg>
+      </a>
+      <span class="mb-3 mb-md-0 text-body-secondary">© 2024 Company, Inc</span>
+    </div>
 
-
-</footer>
+    <ul class="nav col-md-4 justify-content-end list-unstyled d-flex">
+      <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#twitter"></use></svg></a></li>
+      <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#instagram"></use></svg></a></li>
+      <li class="ms-3"><a class="text-body-secondary" href="#"><svg class="bi" width="24" height="24"><use xlink:href="#facebook"></use></svg></a></li>
+    </ul>
+  </footer>
+</div>
 
 </html>
