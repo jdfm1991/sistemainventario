@@ -99,6 +99,7 @@ $today = date('Y-m-d');
     </div>
   </div>
 </div>
+<script src="herramientas.js"></script>
 <?php
 require_once('../../config/modals.php');
 require_once('../foot.php');

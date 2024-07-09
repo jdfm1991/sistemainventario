@@ -6,6 +6,7 @@ require_once("herramientas_model.php");
 
 $herramientas = new Herramientas();
 
+$rol = (isset($_POST['rol'])) ? $_POST['rol'] : '1';
 $departamento = (isset($_POST['departamento'])) ? $_POST['departamento'] : '';
 $modulo = (isset($_POST['modulo'])) ? $_POST['modulo'] : '';
 
@@ -40,8 +41,22 @@ switch ($_GET["op"]) {
   case 'guardardepartamento':
     $data = $herramientas->guardarDepartamento($departamento);
     if ($data) {
-      $dato['status']  = true;
-      $dato['message'] = 'Se Guardo La Infomacion de Manera Satisfactoria';
+      if ($rol == 1) {
+        $id = $herramientas->buscarIdDepartamento($departamento);
+        if ($id) {
+          $data1 = $herramientas->guardarPermisoRolDepartamento($id, $rol);
+          if ($data1) {
+            $dato['status']  = true;
+            $dato['message'] = 'Se Guardo La Infomacion de Manera Satisfactoria';
+          } else {
+            $dato['status']  = false;
+            $dato['message'] = 'Error al Guardar La Infomacion';
+          }
+        } else {
+          $dato['status']  = true;
+          $dato['message'] = 'Error al Encontrar ID de Departamento';
+        }
+      }
     } else {
       $dato['status']  = false;
       $dato['message'] = 'Error al Guardar La Infomacion';
@@ -69,7 +84,7 @@ switch ($_GET["op"]) {
     $data = $herramientas->verModulos();
     $fichero = new FilesystemIterator(PATH_APP);
     foreach ($data as $row) {
-      array_push($omision,$row['modulo']) ;
+      array_push($omision, $row['modulo']);
     }
     foreach ($fichero as $row) {
       $modulo = array();
@@ -84,13 +99,32 @@ switch ($_GET["op"]) {
     break;
 
   case 'guardarmodulo':
-    $data = $herramientas->guardarModulo($modulo,$departamento);
+    $data = $herramientas->guardarModulo($modulo, $departamento);
     if ($data) {
       $dato['status']  = true;
       $dato['message'] = 'Se Guardo La Infomacion de Manera Satisfactoria';
     } else {
       $dato['status']  = false;
       $dato['message'] = 'Error al Guardar La Infomacion';
+    }
+    echo json_encode($dato, JSON_UNESCAPED_UNICODE);
+    break;
+
+  case 'verpermisosroldepartamento':
+    $dato = array();
+    $data = $herramientas->verPermisosRolDepartamento($rol);
+    foreach ($data as $data) {
+      $sub_array = array();
+      $departamento = $data['id'];
+      $sub_array['departamento'] = $data['departamento'];
+      $sub_array['modulo'] = [];
+      $modulo = $herramientas->verModuloDepartamento($departamento);
+      foreach ($modulo as $row) {
+        $module_arr = array();
+        $module_arr['modulo'] = $row['modulo'];
+        array_push($sub_array['modulo'],$module_arr);
+      }
+      $dato[] = $sub_array;
     }
     echo json_encode($dato, JSON_UNESCAPED_UNICODE);
     break;

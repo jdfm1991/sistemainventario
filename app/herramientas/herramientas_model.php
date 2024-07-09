@@ -79,4 +79,67 @@ class Herramientas extends Conectar
     return $sql->fetchAll(PDO::FETCH_ASSOC);
   }
 
+  public function buscarIdDepartamento($departamento)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT id FROM departamento WHERE departamento=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $departamento);
+    $sql->execute();
+    return ($sql->fetch(PDO::FETCH_ASSOC)['id']);
+  }
+
+  public function guardarPermisoRolDepartamento($id,$rol)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $data = NULL;
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "INSERT INTO permiso_departamento(rol,departamento) VALUES (?,?)";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $rol);
+    $sql->bindValue(2, $id);
+    return $sql->execute();
+  }
+
+  public function verPermisosRolDepartamento($rol)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT B.id, B.departamento FROM permiso_departamento AS A 
+            INNER JOIN departamento AS B ON A.departamento=B.id 
+            WHERE rol=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $rol);
+    $sql->execute();
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
+  }
+
+  public function verModuloDepartamento($departamento)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT modulo FROM modulo WHERE departamento=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $departamento);
+    $sql->execute();
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
+  }
+
 }
