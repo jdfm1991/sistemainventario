@@ -1,23 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <?php
-  require_once("../config/abrir_sesion.php");
-  require_once("../config/const.php");
-  if ($_SERVER['REQUEST_URI'] != URI) {
-    if ($_SESSION) {
-      echo '<input type="hidden" id="rol" value=' . $_SESSION['rol'] . '>';
-      echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
-    } else {
-      header("Location: ./");
-      die();
-    } 
-  } else {
-    if ($_SESSION) {  
-      echo '<input type="hidden" id="rol" value=' . $_SESSION['rol'] . '>';
-      echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
-    }
-  }
-  ?>
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">

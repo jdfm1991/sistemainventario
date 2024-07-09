@@ -12,3 +12,5 @@ const NAME_DB = "icb-system";
 const URI = "/ICB-SYSTEM/app/";
 const URL_APP  = ("http://". SERVER.URI);
 const URL_ASSETS  = ("http://". SERVER ."/ICB-SYSTEM/assets/");
+
+define("PATH_APP",     $_SERVER['DOCUMENT_ROOT'] ."/ICB-SYSTEM/app/");

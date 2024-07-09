@@ -1,6 +1,9 @@
 <?php
-require_once('head.php');
-require_once('menu.php');
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
+require_once("../../config/sesion_activa.php");
+require_once('../head.php');
+require_once('../menu.php');
 $today = date('Y-m-d');
 ?>
 <div class="container-md mt-5">
@@ -76,6 +79,7 @@ $today = date('Y-m-d');
             <thead>
               <tr>
                 <th scope="col"># ID</th>
+                <th scope="col">Modulo</th>
                 <th scope="col">Departamento</th>
                 <th scope="col">Descripcion</th>
               </tr>
@@ -96,5 +100,6 @@ $today = date('Y-m-d');
   </div>
 </div>
 <?php
-require_once('foot.php')
+require_once('../../config/modals.php');
+require_once('../foot.php');
 ?>

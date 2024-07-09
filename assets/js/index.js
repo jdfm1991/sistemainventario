@@ -1,14 +1,16 @@
 $(document).ready(function () {
-  rol = $('#rol').val();
-  usuario = $('#usuario').val();
+  let rol = $('#rol').val();
+  let usuario = $('#usuario').val();
+  let link = ''
   //************************************************/
   //*******Se Oculta los elementos iniciales********/
   //*****************de modulo**********************/
   $('#contenedor_departamento').hide();
   $('#contenedor_modulo').hide();
   if (rol && usuario) {
+    link = $('#link').val();
     $('a').removeClass('active');
-    $('#opcionusuario').append('<li><a id="gestionsu" href="gestionsu.php" class="nav-link px-2">Gestion SU</a></li>');
+    $('#opcionusuario').append('<li><a id="gestionsu" href="'+link+'herramientas" class="nav-link px-2">Gestion SU</a></li>');
   }
   //************************************************/
   //***********Evento para Mostrar modal************/
@@ -57,7 +59,7 @@ $(document).ready(function () {
 
             if (data['idrol'] == 1) {
               location.reload();
-              $(location).attr('href', 'gestionsu.php');
+              $(location).attr('href', link+'herramientas');
             } else {
               location.reload();
             }
@@ -78,7 +80,8 @@ $(document).ready(function () {
   //************************************************/
   $('#btnlogout').click(function (e) {
     e.preventDefault();
-    $(location).attr('href', '../config/logout.php');
+    newlink = link.split('/').slice(0,4,).join('/')
+    $(location).attr('href', newlink+'/config/logout.php');
   });
   //************************************************/
   //*********Accion para el boton ver  los**********/
@@ -102,13 +105,13 @@ $(document).ready(function () {
     $('#departmodal').modal('show');
   });
   //************************************************/
-  //***********Evento para enviar infor*************/
-  //**************para iniciar sesion***************/
-  $("#departmodal").submit(function (e) {
+  //**********Accion para guardar info**************/
+  //***********del nuevo departamento***************/
+  $("#departform").submit(function (e) {
     e.preventDefault();
     departamento = $.trim($('#namedepart').val());
     $.ajax({
-      url: "herramientas/herramientas_controller.php?op=guardarepartamento",
+      url: "herramientas_controller.php?op=guardardepartamento",
       type: "POST",
       dataType: "json",
       data: {departamento:departamento},
@@ -158,7 +161,47 @@ $(document).ready(function () {
     $(".modal-title").text("Registro de Departamento")
     $("#messegem").hide();
     cargarSelectorDepartamento()
+    cargarModulosDisponibles()
     $('#modulomodal').modal('show');
+  });
+  //************************************************/
+  //**********Accion para guardar info**************/
+  //***************del nuevo Modulo*****************/
+  $("#moduloform").submit(function (e) {
+    e.preventDefault();
+    modulo = $.trim($('#namemodulo').val());
+    departamento = $.trim($('#depmodulo').val());
+    $.ajax({
+      url: "herramientas_controller.php?op=guardarmodulo",
+      type: "POST",
+      dataType: "json",
+      data: {modulo:modulo,departamento:departamento},
+      success: function (data) {
+        if (data.status == true) {
+          Swal.fire({
+            icon: 'success',
+            html: '<h2>¡' + data.message + '!</h2>',
+            showConfirmButton: false,
+            timer: 2000,
+          })
+          $('#modulomodal').modal('hide');
+          $('#depmodulo').val('')
+          $('#namemodulo').val('')
+          setTimeout(() => {
+            modulotable.ajax.reload(null, false);
+          }, 1500);
+        } else {
+          $('#messege').addClass('alert-danger');
+          $('#messege').show();
+          $('#error').text(data.message);
+          setTimeout(() => {
+            $("#error").text("");
+            $("#messege").hide();
+          }, 3000);
+        }
+      
+      }
+    });
   });
 });
 //************************************************/
@@ -170,7 +213,7 @@ function cargarListaDepartamento() {
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "herramientas/herramientas_controller.php?op=verdepartamentos",
+      url: "herramientas_controller.php?op=verdepartamentos",
       method: 'POST',
       dataSrc: ""
     },
@@ -194,13 +237,14 @@ function cargarListaModulos() {
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "herramientas/herramientas_controller.php?op=vermodulos",
+      url: "herramientas_controller.php?op=vermodulos",
       method: 'POST',
       dataSrc: ""
     },
     columns: [
       { data: "id" },
-      { data: "nombre" },
+      { data: "modulo" },
+      { data: "departamento" },
       { data: "descripcion" },
     ],
     order: {
@@ -214,13 +258,30 @@ function cargarListaModulos() {
 //*********en el selectord de departamento********/
 function cargarSelectorDepartamento() {
   $.ajax({
-    url: "herramientas/herramientas_controller.php?op=verdepartamentos",
+    url: "herramientas_controller.php?op=verdepartamentos",
     method: "POST",
     dataType: "json",
     success: function (data) {
+      $('#depmodulo').empty();
       $('#depmodulo').append('<option value="">_-_Seleccione_-_</option>');
       $.each(data, function (idx, opt) {
         $('#depmodulo').append('<option value="' + opt.id + '">' + opt.nombre + '</option>');
+      });
+    }
+  });
+}
+//************************************************/
+//**********Funcion para cargar la lista**********/
+//****************de modulos creados**************/
+function cargarModulosDisponibles() {
+  $.ajax({
+    url: "herramientas_controller.php?op=listamodulos",
+    method: "POST",
+    dataType: "json",
+    success: function (data) {
+      $('#namemodulo').empty();
+      $.each(data, function (idx, opt) {
+        $('#namemodulo').append('<option value="' + opt.modulo + '">' + opt.modulo + '</option>');
       });
     }
   });

@@ -1,4 +1,7 @@
 <?php
+require_once("../config/abrir_sesion.php");
+require_once("../config/conexion.php");
+require_once("../config/sesion_activa.php");
 require_once('head.php');
 require_once('menu.php');
 ?>
@@ -7,7 +10,6 @@ require_once('menu.php');
     <hr>
     <h1>Bienvenido</h1>
     <hr>
-    <?php echo $_SERVER['REQUEST_URI'] ?>
     <div class="row p-4 pb-0 pe-lg-0 pt-lg-5 align-items-center rounded-3 border shadow-lg">
       <div class="col-lg-7 p-3 p-lg-5 pt-lg-3">
         <h1 class="display-4 fw-bold lh-1 text-body-emphasis">Border hero with cropped image and shadows</h1>
@@ -21,5 +23,6 @@ require_once('menu.php');
   <hr>
 </div>
 <?php
+require_once('../config/modals.php');
 require_once('foot.php')
 ?>

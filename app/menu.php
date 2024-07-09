@@ -11,7 +11,7 @@
             </a>
           </div>
           <ul id="opcionusuario" class="nav nav-pills navbar-nav col-md-8 col-md-auto mb-2 justify-content-center mb-md-0">
-            <li><a href="./" id="home" class="nav-link px-2">Home</a></li>
+            <li><a href="<?php echo  URL_APP; ?>" id="home" class="nav-link px-2">Home</a></li>
             <li><a href="compras.php" class="nav-link px-2">Compras</a></li>
             <li><a href="ventas.php" class="nav-link px-2">Ventas</a></li>
             <li class="nav-item dropdown">

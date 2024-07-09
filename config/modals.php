@@ -167,9 +167,11 @@ $tomorrow = date('Y-m-d', $newday);
       <div class="modal-body">
         <form id="moduloform">
           <div class="modal-body">
-            <div class="mb-3">
-              <label for="name" class="form-label">Nombre del Modulo</label>
-              <input type="text" class="form-control" id="namemodulo" placeholder="Ingrese Nombre del Nuevo Modulo" required>
+            <div class="form-floating mb-3">
+              <select id="namemodulo" class="form-control" required>
+                <!--Carga Mediante Ajax-->
+              </select>
+              <label for="namemodulo" class="form-label">Departamento</label>
             </div>
             <div class="form-floating">
               <select id="depmodulo" class="form-control" required>
