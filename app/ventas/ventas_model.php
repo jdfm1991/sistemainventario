@@ -1,5 +1,5 @@
 <?php
-require_once("../../../config/conexion.php");
+require_once("../../config/conexion.php");
 
 class Ventas extends Conectar
 {
@@ -20,7 +20,7 @@ class Ventas extends Conectar
     return ($sql->fetch(PDO::FETCH_ASSOC)['n_fact']);
   }
 
-  public function registrarVenta($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento)
+  public function registrarVenta($sujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -30,7 +30,7 @@ class Ventas extends Conectar
     $sql = "INSERT INTO operacion_inventario(sujeto, usuario, documento, fecha_o, fecha_r, cant_items, cant_producto, subtotal, excento, base, impuesto, iva, total, tipo_operacion ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
-    $sql->bindValue(1, $idsujeto);
+    $sql->bindValue(1, $sujeto);
     $sql->bindValue(2, $usuario);
     $sql->bindValue(3, $documento);
     $sql->bindValue(4, $fecha);

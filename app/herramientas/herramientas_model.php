@@ -102,7 +102,7 @@ class Herramientas extends Conectar
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "INSERT INTO permiso_departamento(rol,departamento) VALUES (?,?)";
+    $sql = "INSERT INTO permiso_departamento_rol(rol,departamento) VALUES (?,?)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->bindValue(1, $rol);
@@ -117,7 +117,7 @@ class Herramientas extends Conectar
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "SELECT B.id, B.departamento FROM permiso_departamento AS A 
+    $sql = "SELECT B.id, B.departamento FROM permiso_departamento_rol AS A 
             INNER JOIN departamento AS B ON A.departamento=B.id 
             WHERE rol=?";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.

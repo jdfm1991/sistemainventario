@@ -1,11 +1,9 @@
 <?php
-if (!$_SESSION) {
-  header("Location: ./");
-  die();
-} else {
-  echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
-}
-require_once('head.php');
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
+require_once("../../config/sesion_activa.php");
+require_once('../head.php');
+require_once('../menu.php');
 ?>
 <div class="container mt-5">
   <div class="row justify-content-center g-2 mt-5">
@@ -134,7 +132,8 @@ require_once('head.php');
     </div>
   </div>
 </div>
-<script src="app/producto/producto.js"></script>
+<script src="producto.js"></script>
 <?php
-require_once('foot.php')
+require_once('../../config/modals.php');
+require_once('../foot.php');
 ?>

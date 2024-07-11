@@ -3,6 +3,7 @@
 //***************y se inicializan*****************/
 let cont = 0;
 let numero = 0;
+link = $('#link').val();
 const $itemcolumn = $('tbody');
 $(document).ready(function () {
   //************************************************/
@@ -64,7 +65,7 @@ $(document).ready(function () {
   //**********Accion para Cargar la tase de*********/
   //*****************los impuestos******************/
   $.ajax({
-    url: "app/herramientas/herramientas_controller.php?op=impuestos",
+    url: link+"herramientas/herramientas_controller.php?op=impuestos",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -184,7 +185,7 @@ $(document).ready(function () {
       })
     } else {
       $.ajax({
-        url: "app/compras/compras_controller.php?op=registar",
+        url: "compras_controller.php?op=registar",
         type: "POST",
         dataType: "json",
         data: datos,
@@ -192,6 +193,7 @@ $(document).ready(function () {
         contentType: false,
         processData: false,
         success: function (data) {
+          console.log(data);
           if (data.status == true) {
             Swal.fire({
               icon: 'success',
@@ -229,7 +231,7 @@ function cargarListaProveedores() {
   modaproveedortable = $('#modaproveedortable').DataTable({
     pageLength: 10,
     ajax: {
-      url: "app/proveedor/proveedor_controller.php?op=verproveedores",
+      url: link+"proveedor/proveedor_controller.php?op=verproveedores",
       method: 'POST', //usamos el metodo POST
       dataSrc: ""
     },
@@ -252,7 +254,7 @@ function cargarListaProveedores() {
 //*****************del proveedores****************/
 function cargarDataProveedor(id) {
   $.ajax({
-    url: "app/proveedor/proveedor_controller.php?op=verproveedor",
+    url: link+"proveedor/proveedor_controller.php?op=verproveedor",
     method: "POST",
     dataType: "json",
     data: { id: id },
@@ -275,7 +277,7 @@ function cargarListaProductos() {
   pmtable = $('#pmtable').DataTable({
     pageLength: 10,
     ajax: {
-      url: "app/producto/producto_controller.php?op=vertodoproducto",
+      url: link+"producto/producto_controller.php?op=vertodoproducto",
       method: 'POST', //usamos el metodo POST
       dataSrc: ""
     },
@@ -298,7 +300,7 @@ function cargarListaProductos() {
 //*************al registro de compra**************/
 function agragarItemCompra(id) {
   $.ajax({
-    url: "app/producto/producto_controller.php?op=verproducto",
+    url: link+"producto/producto_controller.php?op=verproducto",
     method: "POST",
     dataType: "json",
     data: { id: id },
@@ -405,7 +407,7 @@ function cargarListaComprasRealizadas() {
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "app/compras/compras_controller.php?op=vercompras",
+      url: link+"compras/compras_controller.php?op=vercompras",
       method: 'POST',
       dataSrc: ""
     },

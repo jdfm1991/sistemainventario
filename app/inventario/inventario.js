@@ -3,6 +3,7 @@
 //***************y se inicializan*****************/
 let cont = 0;
 let numero = 0;
+link = $('#link').val();
 const $itemcolumn = $('tbody');
 $(document).ready(function () {
   //************************************************/
@@ -110,7 +111,7 @@ $(document).ready(function () {
   //********Accion para cargar la informacion*******/
   //*************el selector de movimiento***********/
   $.ajax({
-    url: "app/inventario/inventario_controller.php?op=vertipomovimiento",
+    url: "inventario_controller.php?op=vertipomovimiento",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -163,7 +164,7 @@ $(document).ready(function () {
       })
     } else {
       $.ajax({
-        url: "app/inventario/inventario_controller.php?op=registar",
+        url: "inventario_controller.php?op=registar",
         type: "POST",
         dataType: "json",
         data: datos,
@@ -213,7 +214,7 @@ $(document).ready(function () {
 //**************la siguiente factura**************/
 function cargarNumeroFactura(movimiento) {
   $.ajax({
-    url: "app/inventario/inventario_controller.php?op=siguientemovimiento",
+    url: "inventario_controller.php?op=siguientemovimiento",
     method: "POST",
     dataType: "json",
     data: { movimiento: movimiento },
@@ -253,7 +254,7 @@ function cargarListaProductos() {
 //*************al registro de compra**************/
 function agragarItemMovimiento(id) {
   $.ajax({
-    url: "app/producto/producto_controller.php?op=verproducto",
+    url: link+"producto_controller.php?op=verproducto",
     method: "POST",
     dataType: "json",
     data: { id: id },
@@ -345,7 +346,7 @@ function cargarListaMovimientosRealizadas() {
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "app/inventario/inventario_controller.php?op=vermovimiento",
+      url: "inventario_controller.php?op=vermovimiento",
       method: 'POST',
       dataSrc: ""
     },
@@ -375,7 +376,7 @@ function cargarListaMovimientosDetaladosRealizadas() {
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "app/inventario/inventario_controller.php?op=vermovimientodatallado",
+      url: "inventario_controller.php?op=vermovimientodatallado",
       method: 'POST',
       dataSrc: ""
     },

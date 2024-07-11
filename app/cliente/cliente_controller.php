@@ -1,7 +1,7 @@
 <?php
-session_name('intentario');
-session_start();
-require_once("../../../config/conexion.php");
+date_default_timezone_set('america/caracas');
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
 require_once("cliente_model.php");
 
 $cliente = new Cliente();

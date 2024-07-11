@@ -1,11 +1,10 @@
-$(document).ready(function () {
-  let rol = $('#rol').val();
-  let usuario = $('#usuario').val();
-  let link = $('#link').val();
-
+let rol = $('#rol').val();
+let usuario = $('#usuario').val();
+link = $('#link').val();
+$(document).ready(function () { 
   if (rol && usuario) {
     $.ajax({
-      url: "herramientas_controller.php?op=verpermisosroldepartamento",
+      url: link +"herramientas/herramientas_controller.php?op=verpermisosroldepartamento",
       type: "POST",
       dataType: "json",
       data: { rol: rol },

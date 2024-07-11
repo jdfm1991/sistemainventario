@@ -1,25 +1,24 @@
 <?php
-session_name('intentario');
-session_start();
 date_default_timezone_set('america/caracas');
-require_once("../../../config/conexion.php");
+require_once("../../config/abrir_sesion.php");
+//require_once("../../config/conexion.php");
 require_once("ventas_model.php");
 
 $ventas = new Ventas();
 
-$idsujeto = (isset($_POST['idsujeto'])) ? $_POST['idsujeto'] : '';
-$usuario = (isset($_POST['usuario'])) ? $_POST['usuario'] : '';
-$documento = (isset($_POST['documento'])) ? $_POST['documento'] : '';
+$sujeto = (isset($_POST['idsujeto'])) ? $_POST['idsujeto'] : '2';
+$usuario = (isset($_POST['usuario'])) ? $_POST['usuario'] : '2';
+$documento = (isset($_POST['documento'])) ? $_POST['documento'] : '2';
 $fecha = (isset($_POST['fecha'])) ? $_POST['fecha'] : date("Y-m-d");
 $fecha2 = date("Y-m-d H:m:s");
-$items = (isset($_POST['items'])) ? $_POST['items'] : '';
-$cant = (isset($_POST['cant'])) ? $_POST['cant'] : '';
-$subtotal = (isset($_POST['subtotal'])) ? $_POST['subtotal'] : '';
+$items = (isset($_POST['items'])) ? $_POST['items'] : 0;
+$cant = (isset($_POST['cant'])) ? $_POST['cant'] : 0;
+$subtotal = (isset($_POST['subtotal'])) ? $_POST['subtotal'] : 0;
 $excento = (isset($_POST['excento'])) ? $_POST['excento'] : 0;
-$base = (isset($_POST['base'])) ? $_POST['base'] : '';
-$impuesto = (isset($_POST['impuesto'])) ? $_POST['impuesto'] : '';
-$iva = (isset($_POST['iva'])) ? $_POST['iva'] : '';
-$total = (isset($_POST['total'])) ? $_POST['total'] : '';
+$base = (isset($_POST['base'])) ? $_POST['base'] : 0;
+$impuesto = (isset($_POST['impuesto'])) ? $_POST['impuesto'] : 0;
+$iva = (isset($_POST['iva'])) ? $_POST['iva'] : 0;
+$total = (isset($_POST['total'])) ? $_POST['total'] : 0;
 $producto = (isset($_POST['producto'])) ? $_POST['producto'] : [];
 
 switch ($_GET["op"]) {
@@ -32,11 +31,12 @@ switch ($_GET["op"]) {
   case 'registar':
     $dato = array();
     $Tipo_movimiento = 5;
-    $compra = $ventas->registrarVenta($idsujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento);
-    if ($compra) {
+    $registro = $ventas->registrarVenta($sujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento);
+    
+    if ($registro) {
       $arr_prod = json_decode($producto, true);
       foreach ($arr_prod as $row) {
-        $producto = $row['idproducto'];
+        $id = $row['idproducto'];
         $costo = $row['costact'];
         $cant = $row['countact'];
         $existencia = $ventas->tomarExistencia($producto);
@@ -61,7 +61,8 @@ switch ($_GET["op"]) {
       $dato['status']  = false;
       $dato['message'] = 'Error al Registrar la Compra';
     }
-    echo json_encode($dato, JSON_UNESCAPED_UNICODE);
+    
+    echo json_encode($registro, JSON_UNESCAPED_UNICODE);
     break;
 
   case 'verventas':

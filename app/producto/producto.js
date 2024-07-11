@@ -21,7 +21,7 @@ $(document).ready(function () {
     responsive: true,
     pageLength: 10,
     ajax: {
-      url: "app/producto/producto_controller.php?op=vertodoproducto",
+      url: "producto_controller.php?op=vertodoproducto",
       method: 'POST',
       dataSrc: ""
     },
@@ -70,7 +70,7 @@ $(document).ready(function () {
   //********Accion para cargar la informacion*******/
   //*************el selector de categoria***********/
   $.ajax({
-    url: "app/producto/producto_controller.php?op=vercategorias",
+    url: "producto_controller.php?op=vercategorias",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -84,7 +84,7 @@ $(document).ready(function () {
   //********Accion para cargar la informacion*******/
   //*************el selector de Familia*************/
   $.ajax({
-    url: "app/producto/producto_controller.php?op=verfamilias",
+    url: "producto_controller.php?op=verfamilias",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -98,7 +98,7 @@ $(document).ready(function () {
   //********Accion para cargar la informacion*******/
   //*************el selector de Ubicacion***********/
   $.ajax({
-    url: "app/producto/producto_controller.php?op=verubicaciones",
+    url: "producto_controller.php?op=verubicaciones",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -112,7 +112,7 @@ $(document).ready(function () {
   //********Accion para cargar la informacion*******/
   //*************el selector de Ubicacion***********/
   $.ajax({
-    url: "app/producto/producto_controller.php?op=verunidades",
+    url: "producto_controller.php?op=verunidades",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -162,7 +162,7 @@ $(document).ready(function () {
     valor_inventario = $('#valor_inventario').val();
     excento = document.getElementById('excento').checked;
     $.ajax({
-      url: "app/producto/producto_controller.php?op=guargarproducto",
+      url: "producto_controller.php?op=guargarproducto",
       type: "POST",
       dataType: "json",
       data: { id: id, producto: producto, categoria: categoria, familia: familia, ubicacion: ubicacion, unidad: unidad, cantidad: cantidad, costo_unidad: costo_unidad, valor_inventario: valor_inventario, excento:excento },
@@ -209,7 +209,7 @@ $(document).ready(function () {
     }).then((result) => {
       if (result.isConfirmed) {
         $.ajax({
-          url: "app/producto/producto_controller.php?op=eliminarproducto",
+          url: "producto_controller.php?op=eliminarproducto",
           type: "POST",
           dataType: "json",
           data: { id: id },
@@ -243,7 +243,7 @@ $(document).ready(function () {
   $(document).on("click", ".btneditar", function () {
     id = $('#idproducto').val();
     $.ajax({
-      url: "app/producto/producto_controller.php?op=verproducto",
+      url: "producto_controller.php?op=verproducto",
       method: "POST",
       dataType: "json",
       data: { id: id },

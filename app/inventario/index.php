@@ -1,11 +1,9 @@
 <?php
-if (!$_SESSION) {
-  header("Location: ./");
-  die();
-} else {
-  echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
-}
-require_once('head.php');
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
+require_once("../../config/sesion_activa.php");
+require_once('../head.php');
+require_once('../menu.php');
 $today = date('Y-m-d');
 ?>
 <div class="container-fluid mt-5">
@@ -209,7 +207,7 @@ $today = date('Y-m-d');
   </div>
 </div>
 
-<script src="app/inventario/inventario.js"></script>
+<script src="inventario.js"></script>
 <?php
-require_once('foot.php')
+require_once('../foot.php');
 ?>

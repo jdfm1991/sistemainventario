@@ -1,7 +1,6 @@
 <?php
-session_name('intentario');
-session_start();
-require_once("../../../config/conexion.php");
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
 require_once("proveedor_model.php");
 
 $proveedor = new Proveedor();

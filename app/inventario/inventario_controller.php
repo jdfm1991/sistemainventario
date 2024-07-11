@@ -1,8 +1,7 @@
 <?php
-session_name('intentario');
-session_start();
 date_default_timezone_set('america/caracas');
-require_once("../../../config/conexion.php");
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
 require_once("inventario_model.php");
 
 $inventario = new Inventario();

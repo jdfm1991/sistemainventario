@@ -11,6 +11,7 @@
   <link href="<?php echo  URL_ASSETS; ?>css/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
   <!--File Jquery-->
   <script src="<?php echo  URL_ASSETS; ?>js/jquery-3.7.0.min.js"></script>
+  <script src="<?php echo  URL_ASSETS; ?>js/index.js"></script>
   <!-- File Datatables -->
   <link href="<?php echo  URL_ASSETS; ?>js/dataTables/datatables.min.css" rel="stylesheet">
   <script src="<?php echo  URL_ASSETS; ?>js/dataTables/datatables.min.js"></script>

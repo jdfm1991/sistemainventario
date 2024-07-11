@@ -1,51 +1,50 @@
 <?php
-if (!$_SESSION) {
-  header("Location: ./");
-  die();
-} else {
-  echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
-}
-require_once('head.php');
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
+require_once("../../config/sesion_activa.php");
+require_once('../head.php');
+require_once('../menu.php');
 $today = date('Y-m-d');
 ?>
 <div class="container-md mt-5">
   <div class="row justify-content-center g-2 mt-5">
-    <h1>Modulo de Ventas</h1>
+    <h1>Modulo de Compras</h1>
     <hr>
     <div id="contenedor_botones" class="col-sm-3">
       <div class="card">
         <div class="card-header">
-          <b><span>Opciones de Ventas</span></b>
+          <b><span>Opciones de Compras</span></b>
         </div>
         <div class="card-body">
           <!-- Hover added -->
           <div class="list-group">
-            <button type="button" id="rventa" class="list-group-item list-group-item-action">
-              Registrar Ventas
+            <button type="button" id="rcompra" class="list-group-item list-group-item-action">
+              Registrar Compras
             </button>
-            <button type="button" id="vventa" class="list-group-item list-group-item-action">
-              Ver Ventas
+            <button type="button" id="vcompra" class="list-group-item list-group-item-action">
+              Ver Comprar
             </button>
           </div>
+
         </div>
         <div class="card-footer text-muted"></div>
       </div>
     </div>
-    <div id="contenedor_ver_venta" class="col-sm-9">
+    <div id="contenedor_ver_compra" class="col-sm-9">
       <div class="card">
         <div class="card-header">
           <div class="row">
             <div class="col-sm-8 text-center">
-              <h2> Lista de Ventas </h2>
+              <h2> Lista de compras </h2>
             </div>
           </div>
         </div>
         <div class="card-body">
-          <table id="ventasstable" class="table table-striped" style="width:100%">
+          <table id="comprastable" class="table table-striped" style="width:100%">
             <thead>
               <tr>
-                <th scope="col">Nombre de Cliente</th>
-                <th scope="col">Fecha de venta</th>
+                <th scope="col">Nombre de Proveedor</th>
+                <th scope="col">Fecha de Compra</th>
                 <th scope="col">Nuemmero de Dcumento</th>
                 <th scope="col">Items de Factura</th>
                 <th scope="col">Productos Facturados</th>
@@ -54,25 +53,26 @@ $today = date('Y-m-d');
               </tr>
             </thead>
             <tbody>
-              <!--Carga Mediante Ajax-->
+
             </tbody>
           </table>
         </div>
         <div class="card-footer text-muted"></div>
       </div>
     </div>
-    <div id="contenedor_venta" class="col-sm-9">
+    <div id="contenedor_compra" class="col-sm-9">
       <div class="card">
         <div class="card-header">
           <div class="row">
             <div class="col-sm-8 text-center">
-              <h2> Registro de Ventas </h2>
+              <h2> Registro de compras </h2>
             </div>
           </div>
         </div>
         <div class="card-body">
+
           <div id="content1">
-            <form id="ventasform">
+            <form id="comprasform">
               <div class="card-header">
                 <div class="row">
                   <!--side-right Form header-->
@@ -80,7 +80,7 @@ $today = date('Y-m-d');
                     <div class="row justify-content-start align-items-center g-2">
                       <input type="hidden" id="idsujeto">
                       <div class="col-sm-3">
-                        <label for="sujeto" class="col-form-label">Cliente</label>
+                        <label for="sujeto" class="col-form-label">Proveedor</label>
                       </div>
                       <div class="col-sm-4">
                         <input type="text" id="sujeto" class="form-control" placeholder="R.I.F ó D.N.I" required disabled>
@@ -92,7 +92,7 @@ $today = date('Y-m-d');
                       </div>
                       <div class="col-3">
                         <div class="form-floating">
-                            <select id="impuesto" class="form-select form-select-sm" required disabled>
+                            <select id="impuesto" class="form-select form-select-sm" required>
                             <!--Carga Mediante Ajax-->
                             </select>
                             <label for="impuesto" class="form-label">Alicuota</label>
@@ -105,21 +105,22 @@ $today = date('Y-m-d');
                         <label for="documento" class="col-form-label">N# Factura</label>
                       </div>
                       <div class="col-sm-5">
-                        <b><span id="documento" class="fs-6 form-text"></span></b>
+                        <input type="text" id="documento" class="form-control" placeholder="N# Factura" required>
                       </div>
                       <div class="col-4">
                         <div class="form-floating">
-                          <input type="text" id="excento" name="excento" class="form-control form-control-sm" disabled>
-                          <label for="excento" class="form-label">Monto Excento</label>
+                          <input type="text" id="excento" name="excento" class="form-control form-control-sm" >
+                            <label for="excento" class="form-label">Monto Excento</label>
                         </div> 
                       </div>
                       <div class="col-4">
-                        <label for="fecha" class="col-form-label">Fecha de Venta</label>
+                        <label for="fecha" class="col-form-label">Fecha de Compra</label>
                       </div>
                       <div class="col-4">
-                        <input type="date" id="fecha" class="form-control" value=<?php echo $today; ?> max=<?php echo $today; ?> required disabled>
+                        <input type="date" id="fecha" class="form-control" value=<?php echo $today; ?> max=<?php echo $today; ?> required>
                       </div>
                     </div>
+
                   </div>
                   <!--side-left Form header-->
                   <div class="col-sm-4">
@@ -148,6 +149,7 @@ $today = date('Y-m-d');
                       <div class="col-4">
                         <b><span id="total" class="fs-6 form-text"></span></b>
                       </div>
+
                     </div>
                   </div>
                 </div>
@@ -159,7 +161,7 @@ $today = date('Y-m-d');
                   </button>
                 </div>
                 <div class="table-wrapper">
-                  <table id="rventastable" style="width:100%">
+                  <table id="rcomprastable" style="width:100%">
                     <thead>
                       <tr>
                         <th>#ID</th>
@@ -195,7 +197,8 @@ $today = date('Y-m-d');
     </div>
   </div>
 </div>
-<script src="app/ventas/ventas.js"></script>
+<script src="compras.js"></script>
 <?php
-require_once('foot.php')
+require_once('../../config/modals.php');
+require_once('../foot.php');
 ?>

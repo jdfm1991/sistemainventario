@@ -1,6 +1,3 @@
-let rol = $('#rol').val();
-let usuario = $('#usuario').val();
-let link = ''
 $(document).ready(function () {
   //************************************************/
   //*******Se Oculta los elementos iniciales********/
