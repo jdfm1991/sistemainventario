@@ -1,14 +1,13 @@
 <?php
-if (!$_SESSION) {
-  header("Location: ./");
-  die();
-} else {
-  echo '<input type="hidden" id="usuario" value=' . $_SESSION['id_cliente'] . '>';
-}
-require_once('head.php');
+require_once("../../config/abrir_sesion.php");
+require_once("../../config/conexion.php");
+require_once("../../config/sesion_activa.php");
+require_once('../head.php');
+require_once('../menu.php');
 ?>
 <div class="container mt-5">
   <div class="row justify-content-center g-2 mt-3">
+    <hr>
     <h1>Modulo de Usuario</h1>
     <hr>
     <div id="contenedor_fomulario" class="col">
@@ -21,41 +20,44 @@ require_once('head.php');
             <input type="hidden" id="idusuario">
             <div class="row mb-3">
               <div class="col">
-                <label for="nom_usuario"> Nombre de Usuario</label>
+                <label for="nom_usuario" class="form-label">Nombre</label>
                 <input type="text" class="form-control" id="nom_usuario" required>
               </div>
               <div class="col">
-                <label for="ape_usuario"> Apellido de Usuario</label>
+                <label for="ape_usuario" class="form-label">Apellido</label>
                 <input type="text" class="form-control" id="ape_usuario" required>
               </div>
             </div>
             <div class="row mb-3">
               <div class="col">
-                <label for="correo"> Correo</label>
+                <label for="correo" class="form-label">Correo</label>
                 <input type="email" class="form-control" id="correo" required>
               </div>
               <div class="col">
-                <label for="contrasenna"> Contraseña </label>
+                <label for="login_usuario" class="form-label">Usuario</label>
+                <input type="text" class="form-control" id="login_usuario" required>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col">
+                <label for="telefono" class="form-label">Telefono</label>
+                <input type="tel" class="form-control" id="telefono" required>
+              </div>
+              <div class="col">
+                <label for="contrasenna" class="form-label">Contraseña</label>
                 <input type="password" class="form-control" id="contrasenna" required>
               </div>
             </div>
             <div class="row mb-3">
               <div class="col">
-                <label for="telefono"> Telefono</label>
-                <input type="tel" class="form-control" id="telefono" required>
-              </div>
-              <div class="col">
                 <div class="form-floating">
-                  <select id="rol" class="form-control" required>
+                  <select id="roles" class="form-control" required>
                     <!--Carga Mediante Ajax-->
                   </select>
-                  <label for="rol" class="form-label">Rol</label>
+                  <label for="roles" class="form-label">Roles</label>
                 </div>
               </div>
-            </div>
-            <div class="row mb-3">
-
-              <div class="col-6">
+              <div class="col">
                 <div class="form-floating">
                   <select id="estatus" class="form-control" required>
                     <!--Carga Mediante Ajax-->
@@ -83,8 +85,8 @@ require_once('head.php');
             </div>
             <div class="col-sm-4">
               <!--<button id="btnproducto" type="button" class="btn btn-outline-primary btn-light">
-                                <i class="bi bi-person-fill-add"></i><span class="">Nuevo Ususario</span>
-                            </button>-->
+                <i class="bi bi-person-fill-add"></i><span class="">Nuevo Ususario</span>
+              </button>-->
             </div>
           </div>
         </div>
@@ -92,10 +94,11 @@ require_once('head.php');
           <table id="usuariotabla" class="table table-striped" style="width:100%">
             <thead>
               <tr>
+                <th scope="col">Usuario</th>
                 <th scope="col">Nombre</th>
-                <th scope="col">Apellido</th>
                 <th scope="col">Correo</th>
                 <th scope="col">Rol</th>
+                <th scope="col">Estado</th>
                 <th scope="col"></th>
               </tr>
             </thead>
@@ -110,7 +113,8 @@ require_once('head.php');
     </div>
   </div>
 </div>
-<script src="app/usuario/usuario.js"></script>
+<br>
+<script src="usuario.js"></script>
 <?php
-require_once('foot.php')
+require_once('../foot.php')
 ?>

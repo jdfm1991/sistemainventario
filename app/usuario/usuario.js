@@ -6,17 +6,18 @@ $(document).ready(function () {
     responsive: false,
     pageLength: 10,
     ajax: {
-      url: "app/usuario/usuario_controller.php?op=vertodousuario",
+      url: "usuario_controller.php?op=showdatausers",
       method: 'POST',
       dataSrc: ""
     },
     columns: [
-      { data: "nom_usuario" },
-      { data: "ape_usuario" },
-      { data: "correo" },
-      { data: "rol" },
+      { data: "user" },
+      { data: "name" },
+      { data: "user_email" },
+      { data: "user_rol" },
+      { data: "user_status" },
       {
-        data: "id_cliente",
+        data: "id",
         "render": function (data, type, row) {
           return "<div class='text-center'><div class='btn-group'>" +
             "<button onclick='tomarId(`" + data + "`)' class='btn btn-outline-info btn-sm btneditar'><i class='bi bi-pencil-square'></i></button>" +
@@ -30,13 +31,13 @@ $(document).ready(function () {
   //********Accion para cargar la informacion********/
   //*********el selector de roles de usuario*********/
   $.ajax({
-    url: "app/usuario/usuario_controller.php?op=verroles",
+    url: "usuario_controller.php?op=showdataroles",
     method: "POST",
     dataType: "json",
     success: function (data) {
-      $('#rol').append('<option value="">_-_Seleccione_-_</option>');
+      $('#roles').append('<option value="">_-_Seleccione_-_</option>');
       $.each(data, function (idx, opt) {
-        $('#rol').append('<option value="' + opt.id + '">' + opt.rol + '</option>');
+        $('#roles').append('<option value="'+opt.id+'">'+opt.rol +'</option>');
       });
     }
   });
@@ -44,7 +45,7 @@ $(document).ready(function () {
   //********Accion para cargar la informacion********/
   //*********el selector el estatus de usuario*********/
   $.ajax({
-    url: "app/usuario/usuario_controller.php?op=verestatus",
+    url: "usuario_controller.php?op=showdatastatus",
     method: "POST",
     dataType: "json",
     success: function (data) {
@@ -55,38 +56,26 @@ $(document).ready(function () {
     }
   });
   //************************************************/
-  //********Accion para bloquear usuarios********/
-  //*********que interactuen en el sistema*********/
-  $.ajax({
-    url: "app/usuario/usuario_controller.php?op=veropbloquear",
-    method: "POST",
-    dataType: "json",
-    success: function (data) {
-      $('#bloqueo').append('<option value="">_-_Seleccione_-_</option>');
-      $.each(data, function (idx, opt) {
-        $('#bloqueo').append('<option value="' + opt.id + '">' + opt.bloqueo + '</option>');
-      });
-    }
-  });
-  //************************************************/
   //********Accion para Enviar y guardar la*********/
   //*********informacion del usuario************/
   $('#formulariodeusuario').submit(function (e) {
     e.preventDefault();
     id = $('#idusuario').val();
+    usuario = $('#login_usuario').val();
     nom_usuario = $('#nom_usuario').val();
     ape_usuario = $('#ape_usuario').val();
     contrasenna = $('#contrasenna').val();
     correo = $('#correo').val();
     telefono = $('#telefono').val();
-    rol = $('#rol').val();
+    rol = $('#roles').val();
     estatus = $('#estatus').val();
     $.ajax({
-      url: "app/usuario/usuario_controller.php?op=guargarusuario",
+      url: "usuario_controller.php?op=saveuserdata",
       type: "POST",
       dataType: "json",
       data: {
         id: id,
+        usuario:usuario,
         nom_usuario: nom_usuario,
         ape_usuario: ape_usuario,
         contrasenna: contrasenna,
@@ -121,12 +110,6 @@ $(document).ready(function () {
       }
     });
   });
-
-  $('#bloqueo').change(function (e) {
-    e.preventDefault();
-    bloqueo = document.getElementById('bloqueo');
-    console.log(bloqueo.checked);
-  });
 });
 //************************************************/
 //*********Opcion para Eliminar un usuario*******/
@@ -140,7 +123,7 @@ $(document).on("click", ".btneliminar", function () {
   }).then((result) => {
     if (result.isConfirmed) {
       $.ajax({
-        url: "app/usuario/usuario_controller.php?op=eliminarusuario",
+        url: "usuario_controller.php?op=deleteuserdata",
         type: "POST",
         dataType: "json",
         data: { id: id },
@@ -152,8 +135,10 @@ $(document).on("click", ".btneliminar", function () {
               showConfirmButton: false,
               timer: 2000,
             });
+            limpiarFormulario()
             setTimeout(() => {
               usuariotabla.ajax.reload(null, false);
+              console.log(id);
             }, 1000);
           } else {
             Swal.fire({
@@ -162,6 +147,7 @@ $(document).on("click", ".btneliminar", function () {
               showConfirmButton: false,
               timer: 2000,
             });
+            limpiarFormulario()
           }
         }
       });
@@ -174,27 +160,20 @@ $(document).on("click", ".btneliminar", function () {
 $(document).on("click", ".btneditar", function () {
   id = $('#idusuario').val();
   $.ajax({
-    url: "app/usuario/usuario_controller.php?op=verusuario",
+    url: "usuario_controller.php?op=showdatauser",
     method: "POST",
     dataType: "json",
     data: { id: id },
     success: function (data) {
       $.each(data, function (idx, opt) {
-        $('#nom_usuario').val(opt.nom_usuario);
-        $('#ape_usuario').val(opt.ape_usuario);
-        //$('#contrasenna').val(opt.contrasenna);
+        $('#nom_usuario').val(opt.user_name);
+        $('#ape_usuario').val(opt.user_last_name);
+        $('#login_usuario').val(opt.user);
+        $('#correo').val(opt.user_email);
+        $('#telefono').val(opt.user_phone);
+        $('#roles').val(opt.user_rol);
+        $('#estatus').val(opt.user_status);
         $("#contrasenna").prop('required', false);
-        $('#correo').val(opt.correo);
-        $('#telefono').val(opt.telefono);
-        $('#rol').val(opt.rol);
-        $('#estatus').val(opt.estatus);
-        /*
-        if (opt.bloqueo==1) {
-            $('#bloqueo').prop('checked', true);
-        } else {
-            $('#bloqueo').prop('checked', false); 
-        } 
-        */
       });
     }
   });
@@ -205,12 +184,13 @@ function tomarId(id) {
 }
 function limpiarFormulario() {
   $('#idusuario').val('');
+  $('#login_usuario').val('')
   $('#nom_usuario').val('');
   $('#ape_usuario').val('');
   $('#contrasenna').val('');
   $('#correo').val('');
   $('#telefono').val('');
-  $('#rol').val('');
+  $('#roles').val('');
   $('#estatus').val('');
 }
 

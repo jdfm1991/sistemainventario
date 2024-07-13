@@ -181,6 +181,7 @@ $(document).ready(function () {
         processData: false,
         success: function (data) {
           console.log(data);
+          /*
           if (data.status == true) {
             Swal.fire({
               icon: 'success',
@@ -205,6 +206,7 @@ $(document).ready(function () {
               timer: 2000,
             });
           }
+          */
         }
       });
     }

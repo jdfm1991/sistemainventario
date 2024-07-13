@@ -32,7 +32,7 @@ switch ($_GET["op"]) {
     $dato = array();
     $Tipo_movimiento = 5;
     $registro = $ventas->registrarVenta($sujeto, $usuario, $documento, $fecha, $fecha2, $items, $cant, $subtotal, $excento, $base, $impuesto, $iva, $total, $Tipo_movimiento);
-    
+    /*
     if ($registro) {
       $arr_prod = json_decode($producto, true);
       foreach ($arr_prod as $row) {
@@ -61,8 +61,8 @@ switch ($_GET["op"]) {
       $dato['status']  = false;
       $dato['message'] = 'Error al Registrar la Compra';
     }
-    
-    echo json_encode($registro, JSON_UNESCAPED_UNICODE);
+    */
+    echo json_encode($producto, JSON_UNESCAPED_UNICODE);
     break;
 
   case 'verventas':

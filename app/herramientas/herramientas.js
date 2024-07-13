@@ -22,20 +22,23 @@ $(document).ready(function () {
   $("#btndepart").click(function (e) {
     e.preventDefault();
     $(".modal-title").text("Registro de Departamento")
-    $("#messege").hide();
+    $("#messeged").hide();
     $('#departmodal').modal('show');
+    cargarSelectorPosicion()
   });
   //************************************************/
   //**********Accion para guardar info**************/
   //***********del nuevo departamento***************/
   $("#departform").submit(function (e) {
     e.preventDefault();
-    departamento = $.trim($('#namedepart').val());
+    departamento = $('#namedepart').val();
+    posision = $('#posisiond').val();
+    detalle = $('#detaild').val();
     $.ajax({
-      url: "herramientas_controller.php?op=guardardepartamento",
+      url: "herramientas_controller.php?op=savedepartment",
       type: "POST",
       dataType: "json",
-      data: { departamento: departamento, rol:rol },
+      data: {departamento:departamento,posision:posision,detalle:detalle},
       success: function (data) {
         if (data.status == true) {
           Swal.fire({
@@ -58,7 +61,6 @@ $(document).ready(function () {
             $("#messege").hide();
           }, 3000);
         }
-
       }
     });
   });
@@ -140,8 +142,9 @@ function cargarListaDepartamento() {
     },
     columns: [
       { data: "id" },
-      { data: "nombre" },
-      { data: "descripcion" },
+      { data: "department" },
+      { data: "position" },
+      { data: "detail" },
     ],
     order: {
       name: 'id',
@@ -188,6 +191,23 @@ function cargarSelectorDepartamento() {
       $.each(data, function (idx, opt) {
         $('#depmodulo').append('<option value="' + opt.id + '">' + opt.nombre + '</option>');
       });
+    }
+  });
+}
+//************************************************/
+//********Funcion para cargar la posiciones*******/
+//*********en el selector de departamento********/
+function cargarSelectorPosicion() {
+  $.ajax({
+    url: "herramientas_controller.php?op=verdepartamentos",
+    method: "POST",
+    dataType: "json",
+    success: function (data) {
+      $('#posisiond').empty();
+      $('#posisiond').append('<option value="">Seleccione</option>');
+      for (let i = 1; i <= data.length + 1; i++) {
+        $('#posisiond').append('<option value="'+ i +'">'+ i +'</option>');
+      }
     }
   });
 }

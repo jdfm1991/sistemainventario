@@ -5,10 +5,12 @@ require_once("../../config/sesion_activa.php");
 require_once('../head.php');
 require_once('../menu.php');
 $today = date('Y-m-d');
+if ($_SESSION['rol'] == 1) {
 ?>
 <div class="container-md mt-5">
   <div class="row justify-content-center g-2 mt-5">
-    <h1>Modulo de Ventas</h1>
+    <hr>
+    <h1>Modulo de Super Usuario</h1>
     <hr>
     <div id="contenedor_botones" class="col-sm-3">
       <div class="card">
@@ -49,6 +51,7 @@ $today = date('Y-m-d');
               <tr>
                 <th scope="col"># ID</th>
                 <th scope="col">Departamento</th>
+                <th scope="col">Posicion</th>
                 <th scope="col">Descripcion</th>
               </tr>
             </thead>
@@ -101,6 +104,22 @@ $today = date('Y-m-d');
 </div>
 <script src="herramientas.js"></script>
 <?php
+} else { ?>
+<div class="container-md mt-5">
+  <div class="row justify-content-center g-2 mt-5">
+    <hr>
+    <h1>error 403 Forbidden</h1>
+    <div id="contenedor_default" class="col-sm-9">
+      <div class="card">
+        <img src="../../assets/img/403-forbidden.png" class="img-fluid" alt="...">
+      </div>
+      <h3 class="text-danger text-center">Sin Permisos Para Esta Seccion</h3>
+      <hr>
+    </div>
+  </div>
+</div>
+<?php
+}
 require_once('../../config/modals.php');
 require_once('../foot.php');
 ?>

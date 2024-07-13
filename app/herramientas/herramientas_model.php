@@ -18,21 +18,21 @@ class Herramientas extends Conectar
     return $sql->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function verDepartamentos()
+  public function showDepartmentData()
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "SELECT * FROM departamento";
+    $sql = "SELECT * FROM department_data_table";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->execute();
     return $sql->fetchAll(PDO::FETCH_ASSOC);
   }
 
-  public function guardarDepartamento($departamento)
+  public function saveDepartmentData($departamento,$posision,$detalle)
   {
     //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
     //CUANDO ES APPWEB ES CONEXION.
@@ -40,11 +40,62 @@ class Herramientas extends Conectar
     $conectar = parent::conexion();
     parent::set_names();
     //QUERY
-    $sql = "INSERT INTO departamento(departamento) VALUES (?)";
+    $sql = "INSERT INTO department_data_table(department,position,detail) VALUES (?,?,?)";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
     $sql->bindValue(1, $departamento);
+    $sql->bindValue(2, $posision);
+    $sql->bindValue(3, $detalle);
     return $sql->execute();
+  }
+
+  public function getDepartmentDataByName($departamento)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT id FROM department_data_table WHERE department=?";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $departamento);
+    $sql->execute();
+    return ($sql->fetch(PDO::FETCH_ASSOC)['id']);
+  }
+
+  public function saveDepartmentRolePermissions($id,$rol)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $data = NULL;
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "INSERT INTO department_role_permissions_data_table(department,user_rol) VALUES (?,?)";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $id);
+    $sql->bindValue(2, $rol);
+    return $sql->execute();
+  }
+
+  public function showDepartmentRolePermissions($rol)
+  {
+    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
+    //CUANDO ES APPWEB ES CONEXION.
+    $conectar = parent::conexion();
+    parent::set_names();
+    //QUERY
+    $sql = "SELECT B.id, B.department FROM department_role_permissions_data_table AS A 
+            INNER JOIN department_data_table AS B ON B.id=A.department
+            WHERE user_rol = ?
+            ORDER BY B.position";
+    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
+    $sql = $conectar->prepare($sql);
+    $sql->bindValue(1, $rol);
+    $sql->execute();
+    return $sql->fetchAll(PDO::FETCH_ASSOC);
   }
 
   public function guardarModulo($modulo,$departamento)
@@ -75,54 +126,6 @@ class Herramientas extends Conectar
               INNER JOIN departamento AS B ON A.departamento=B.id;";
     //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
     $sql = $conectar->prepare($sql);
-    $sql->execute();
-    return $sql->fetchAll(PDO::FETCH_ASSOC);
-  }
-
-  public function buscarIdDepartamento($departamento)
-  {
-    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
-    //CUANDO ES APPWEB ES CONEXION.
-    $conectar = parent::conexion();
-    parent::set_names();
-    //QUERY
-    $sql = "SELECT id FROM departamento WHERE departamento=?";
-    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
-    $sql = $conectar->prepare($sql);
-    $sql->bindValue(1, $departamento);
-    $sql->execute();
-    return ($sql->fetch(PDO::FETCH_ASSOC)['id']);
-  }
-
-  public function guardarPermisoRolDepartamento($id,$rol)
-  {
-    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
-    //CUANDO ES APPWEB ES CONEXION.
-    $data = NULL;
-    $conectar = parent::conexion();
-    parent::set_names();
-    //QUERY
-    $sql = "INSERT INTO permiso_departamento_rol(rol,departamento) VALUES (?,?)";
-    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
-    $sql = $conectar->prepare($sql);
-    $sql->bindValue(1, $rol);
-    $sql->bindValue(2, $id);
-    return $sql->execute();
-  }
-
-  public function verPermisosRolDepartamento($rol)
-  {
-    //LLAMAMOS A LA CONEXION QUE CORRESPONDA CUANDO ES SAINT: CONEXION2
-    //CUANDO ES APPWEB ES CONEXION.
-    $conectar = parent::conexion();
-    parent::set_names();
-    //QUERY
-    $sql = "SELECT B.id, B.departamento FROM permiso_departamento_rol AS A 
-            INNER JOIN departamento AS B ON A.departamento=B.id 
-            WHERE rol=?";
-    //PREPARACION DE LA CONSULTA PARA EJECUTARLA.
-    $sql = $conectar->prepare($sql);
-    $sql->bindValue(1, $rol);
     $sql->execute();
     return $sql->fetchAll(PDO::FETCH_ASSOC);
   }

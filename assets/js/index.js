@@ -1,29 +1,27 @@
-let rol = $('#rol').val();
 let usuario = $('#usuario').val();
 link = $('#link').val();
 $(document).ready(function () { 
   if (rol && usuario) {
     $.ajax({
-      url: link +"herramientas/herramientas_controller.php?op=verpermisosroldepartamento",
+      url: link +"herramientas/herramientas_controller.php?op=showmenurol",
       type: "POST",
       dataType: "json",
-      data: { rol: rol },
       success: function (data) {
         $.each(data, function (idx, opt) {
           $('#opcionusuario').append(
             '<li class="nav-item dropdown">' +
-            '<a class="nav-link dropdown-toggle px-2" href="#" data-bs-toggle="dropdown" aria-expanded="false">' + opt.departamento + '</a>' +
-            '<ul id="' + opt.departamento + '" class="dropdown-menu">' +
+            '<a class="nav-link dropdown-toggle px-2" href="#" data-bs-toggle="dropdown" aria-expanded="false">' + opt.department + '</a>' +
+            '<ul id="' + opt.department + '" class="dropdown-menu">' +
             '</ul>' +
             '</li>'
-          );
+          );/*
           if (opt.modulo.length > 0) {
             $.each(opt.modulo, function (idx, sub) {
-              $('#' + opt.departamento).append('<li><a class="dropdown-item" href="' + link + sub.modulo + '">' + sub.modulo + '</a></li>');
+              $('#' + opt.department).append('<li><a class="dropdown-item" href="' + link + sub.modulo + '">' + sub.modulo + '</a></li>');
             });
           } else {
-            $('#' + opt.departamento).append('<li><a class="dropdown-item" href="">sin dep</a></li>');
-          }
+            $('#' + opt.department).append('<li><a class="dropdown-item" href="">sin dep</a></li>');
+          }*/
 
         });
         if (rol == 1) {
@@ -75,12 +73,12 @@ $(document).ready(function () {
           Swal.fire({
             icon: 'success',
             title: 'Bienvenido...',
-            html: '<h2>¡Estimado ' + data['rol'] + '!</h2><br><h4>Usted ' + data['message'] + '</h4>',
+            html: '<h2>¡Estimado ' + data['user'] + '!</h2><br><h4>Usted ' + data['message'] + '</h4>',
             showConfirmButton: false,
             timer: 2000,
           });
 
-          if (data['idrol'] == 1) {
+          if (data['rol'] == 1) {
 
             location.reload();
             $(location).attr('href', 'herramientas');
